@@ -17,7 +17,7 @@ class SearchResult(BaseModel):
     Data model for Weibo user search results.
     
     Attributes:
-        Id (Union[int, str]): User's unique identifier
+        Id (str): User's unique identifier
         NickName (str): User's display name
         AvatarHD (str): URL to user's high-resolution avatar image
         Description (str): User's profile description
