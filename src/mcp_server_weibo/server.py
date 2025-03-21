@@ -9,14 +9,14 @@ mcp = FastMCP("Weibo")
 crawler = WeiboCrawler()
 
 @mcp.tool()
-async def search_users(keyword: str, ctx: Context, limit: Union[int, None]) -> list[dict]:
+async def search_users(keyword: str, ctx: Context, limit: int) -> list[dict]:
     """
     Search for Weibo users based on a keyword.
     
     Args:
         keyword (str): Search term to find users
         ctx (Context): MCP context object
-        limit (Union[int, None]): Maximum number of users to return, None for no limit
+        limit (int): Maximum number of users to return
         
     Returns:
         list[dict]: List of dictionaries containing user information
@@ -38,14 +38,14 @@ async def get_profile(uid: Union[int, str], ctx: Context) -> dict:
     return await crawler.extract_weibo_profile(str(uid))
 
 @mcp.tool()
-async def get_feeds(uid: Union[int, str], ctx: Context, limit: Union[int, None]) -> list[dict]:
+async def get_feeds(uid: Union[int, str], ctx: Context, limit: int) -> list[dict]:
     """
     Get a Weibo user's feeds (posts).
     
     Args:
         uid (Union[int, str]): The unique identifier of the Weibo user
         ctx (Context): MCP context object
-        limit (Union[int, None]): Maximum number of feeds to return, None for no limit
+        limit (int): Maximum number of feeds to return, None for no limit
         
     Returns:
         list[dict]: List of dictionaries containing feed information
