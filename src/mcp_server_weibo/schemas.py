@@ -22,7 +22,7 @@ class SearchResult(BaseModel):
         AvatarHD (str): URL to user's high-resolution avatar image
         Description (str): User's profile description
     """
-    Id: Union[int, str]
+    Id: str
     NickName: str
     AvatarHD: str
     Description: str

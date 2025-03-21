@@ -98,7 +98,7 @@ class WeiboCrawler:
             SearchResult: Formatted user information
         """
         return SearchResult(
-            id=user['id'], 
+            id=str(user['id']), 
             nickName=user['screen_name'], 
             avatarHD=user['avatar_hd'],
             description=user['description']

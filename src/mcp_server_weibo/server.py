@@ -1,4 +1,3 @@
-from typing import Union
 from mcp.server.fastmcp import FastMCP, Context
 from .weibo import WeiboCrawler
 
@@ -24,12 +23,12 @@ async def search_users(keyword: str, ctx: Context, limit: int) -> list[dict]:
     return await crawler.search_weibo_users(keyword, limit)
 
 @mcp.tool()
-async def get_profile(uid: Union[int, str], ctx: Context) -> dict:
+async def get_profile(uid: str, ctx: Context) -> dict:
     """
     Get a Weibo user's profile information.
     
     Args:
-        uid (Union[int, str]): The unique identifier of the Weibo user
+        uid (str): The unique identifier of the Weibo user
         ctx (Context): MCP context object
         
     Returns:
@@ -38,7 +37,7 @@ async def get_profile(uid: Union[int, str], ctx: Context) -> dict:
     return await crawler.extract_weibo_profile(str(uid))
 
 @mcp.tool()
-async def get_feeds(uid: Union[int, str], ctx: Context, limit: int) -> list[dict]:
+async def get_feeds(uid: str, ctx: Context, limit: int) -> list[dict]:
     """
     Get a Weibo user's feeds (posts).
     
