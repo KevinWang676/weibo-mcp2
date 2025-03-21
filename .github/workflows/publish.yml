@@ -31,7 +31,7 @@ jobs:
         uv pip install build twine
     
     - name: Build package
-      run: python -m build
+      run: uv build
     
     - name: Publish to PyPI
       env:
