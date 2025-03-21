@@ -1,0 +1,10 @@
+[project]
+name = "mcp-server-weibo"
+version = "0.1.0"
+description = "A MCP Server for Weibo"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx",
+    "mcp[cli]",
+]
