@@ -15,4 +15,4 @@ Repository = "https://github.com/qinyuanpei/mcp-server-weibo.git"
 Issues = "https://github.com/qinyuanpei/mcp-server-weibo/issues"
 
 [project.scripts]
-mcp-server-ipinfo = "mcp_server_weibo.server:mcp.run"
+mcp-server-weibo = "mcp_server_weibo.server:mcp.run"
