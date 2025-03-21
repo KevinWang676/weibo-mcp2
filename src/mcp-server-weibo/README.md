@@ -1,44 +1,73 @@
-# MCP Server Weibo
+# Weibo MCP Server
 
-A Weibo crawler server for MCP (Model Control Protocol) that provides functionality to fetch user profiles, feeds, and search for users on Weibo.
+这是一个基于 [Model Context Protocol](https://modelcontextprotocol.io) 的服务器，用于抓取微博用户信息、动态和搜索功能。该服务器可以帮助获取微博用户的详细信息、动态内容以及进行用户搜索。
 
-## Features
+## 安装
 
-- Search Weibo users by keyword
-- Get user profile information
-- Fetch user's Weibo feeds with pagination support
+从源代码安装：
 
-## Installation
+```json
+{
+    "mcpServers": {
+        "weibo": {
+            "command": "uvx",
+            "args": [
+                "--from",
+                "git+https://github.com/qinyuanpei/mcp-server-weibo.git",
+                "mcp-server-weibo"
+            ]
+        }
+    }
+}
+```
+从包管理器安装：
 
-```bash
-pip install mcp-server-weibo
+```json
+{
+    "mcpServers": {
+        "weibo": {
+            "command": "uvx",
+            "args": ["mcp-server-weibo"],
+        }
+    }
+}
 ```
 
-## Usage
+## 组件
 
-```python
-from mcp_server_weibo import WeiboCrawler
+### 工具
 
-# Create a crawler instance
-crawler = WeiboCrawler()
+- `search_weibo_users`: 用于搜索微博用户
+    - **输入:** `keyword`: 搜索关键词
+    - **输出:** `WeiboUsers`: 包含用户基本信息的 Pydantic 模型列表
 
-# Search for users
-users = await crawler.search_weibo_users("keyword", limit=10)
+- `extract_weibo_profile`: 获取用户详细信息
+    - **输入:** `user_id`: 用户ID
+    - **输出:** `WeiboProfile`: 包含用户详细信息的 Pydantic 模型
 
-# Get user profile
-profile = await crawler.extract_weibo_profile("user_id")
+- `extract_weibo_feeds`: 获取用户动态
+    - **输入:** `user_id`: 用户ID, `limit`: 获取数量限制
+    - **输出:** `WeiboFeeds`: 包含用户动态信息的 Pydantic 模型列表
 
-# Get user feeds
-feeds = await crawler.extract_weibo_feeds("user_id", limit=20)
-```
+### 资源   
 
-## Requirements
+无
+
+### 提示
+
+无
+
+## 依赖要求
 
 - Python >= 3.8
 - httpx >= 0.24.0
 - pydantic >= 2.0.0
 - fastmcp >= 0.1.0
 
-## License
+## 许可证
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
+
+## 免责声明
+
+本项目与微博官方无关，仅用于学习和研究目的。
