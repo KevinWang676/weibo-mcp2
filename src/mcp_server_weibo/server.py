@@ -1,6 +1,6 @@
 from typing import Union
 from mcp.server.fastmcp import FastMCP, Context
-from weibo import WeiboCrawler
+from .weibo import WeiboCrawler
 
 # Initialize FastMCP server with name "Weibo"
 mcp = FastMCP("Weibo")
