@@ -1,8 +1,8 @@
 import httpx
 import logging
 from urllib.parse import urlencode
-from consts import DEFAULT_HEADERS, PROFILE_URL, FEEDS_URL
-from schemas import PagedFeeds, SearchResult
+from .consts import DEFAULT_HEADERS, PROFILE_URL, FEEDS_URL
+from .schemas import PagedFeeds, SearchResult
 
 class WeiboCrawler:
     """
