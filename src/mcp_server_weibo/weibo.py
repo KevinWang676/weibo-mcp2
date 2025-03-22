@@ -12,12 +12,12 @@ class WeiboCrawler:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    async def extract_weibo_profile(self, uid):
+    async def extract_weibo_profile(self, uid: int) -> dict:
         """
         Extract user profile information from Weibo.
         
         Args:
-            uid (str): The unique identifier of the Weibo user
+            uid (int): The unique identifier of the Weibo user
             
         Returns:
             dict: User profile information or empty dict if extraction fails
@@ -31,12 +31,12 @@ class WeiboCrawler:
                 self.logger.error(f"Unable to eextract profile for uid '{str(uid)}'", exc_info=True)
                 return {}
 
-    async def extract_weibo_feeds(self, uid, limit):
+    async def extract_weibo_feeds(self, uid: int, limit: int) -> list[dict]:
         """
         Extract user's Weibo feeds (posts) with pagination support.
         
         Args:
-            uid (str): The unique identifier of the Weibo user
+            uid (int): The unique identifier of the Weibo user
             limit (int): Maximum number of feeds to extract
             
         Returns:
@@ -59,7 +59,7 @@ class WeiboCrawler:
                 
         return feeds
 
-    async def search_weibo_users(self, keyword, limit):
+    async def search_weibo_users(self, keyword: str, limit: int) -> list[SearchResult]:
         """
         Search for Weibo users based on a keyword.
         
@@ -87,7 +87,7 @@ class WeiboCrawler:
                 self.logger.error(f"Unable to search users for keyword '{keyword}'", exc_info=True)
                 return []
 
-    def _to_search_result(self, user):
+    def _to_search_result(self, user: dict) -> SearchResult:
         """
         Convert raw user data to SearchResult object.
         
@@ -98,25 +98,25 @@ class WeiboCrawler:
             SearchResult: Formatted user information
         """
         return SearchResult(
-            id=str(user['id']), 
+            id=user['id'], 
             nickName=user['screen_name'], 
             avatarHD=user['avatar_hd'],
             description=user['description']
         )
         
-    async def _get_container_id(self, client, uid):
+    async def _get_container_id(self, client, uid: int):
         """
         Get the container ID for a user's Weibo feed.
         
         Args:
             client (httpx.AsyncClient): HTTP client instance
-            uid (str): The unique identifier of the Weibo user
+            uid (int): The unique identifier of the Weibo user
             
         Returns:
             str: Container ID for the user's feed or None if extraction fails
         """
         try:
-            response = await client.get(PROFILE_URL.format(userId=uid), headers=DEFAULT_HEADERS)
+            response = await client.get(PROFILE_URL.format(userId=str(uid)), headers=DEFAULT_HEADERS)
             data = response.json()
             tabs_info = data.get("data", {}).get("tabsInfo", {}).get("tabs", [])
             for tab in tabs_info:
@@ -126,13 +126,13 @@ class WeiboCrawler:
             self.logger.error(f"Unable to extract containerId for uid '{str(uid)}'", exc_info=True)
             return None
 
-    async def _extract_feeds(self, client, uid, container_id, since_id):
+    async def _extract_feeds(self, client, uid: int, container_id: str, since_id: str):
         """
         Extract a single page of Weibo feeds for a user.
         
         Args:
             client (httpx.AsyncClient): HTTP client instance
-            uid (str): The unique identifier of the Weibo user
+            uid (int): The unique identifier of the Weibo user
             container_id (str): Container ID for the user's feed
             since_id (str): ID of the last feed for pagination
             
@@ -140,7 +140,7 @@ class WeiboCrawler:
             PagedFeeds: Object containing feeds and next page's since_id
         """
         try:
-            url = FEEDS_URL.format(userId=uid, containerId=container_id, sinceId=since_id)
+            url = FEEDS_URL.format(userId=str(uid), containerId=container_id, sinceId=since_id)
             response = await client.get(url, headers = DEFAULT_HEADERS)
             data = response.json()
             new_since_id = data.get("data", {}).get("cardlistInfo", {}).get("since_id", "")

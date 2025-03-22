@@ -16,3 +16,7 @@ Issues = "https://github.com/qinyuanpei/mcp-server-weibo/issues"
 
 [project.scripts]
 mcp-server-weibo = "mcp_server_weibo.server:mcp.run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

@@ -23,26 +23,26 @@ async def search_users(keyword: str, ctx: Context, limit: int) -> list[dict]:
     return await crawler.search_weibo_users(keyword, limit)
 
 @mcp.tool()
-async def get_profile(uid: str, ctx: Context) -> dict:
+async def get_profile(uid: int, ctx: Context) -> dict:
     """
     Get a Weibo user's profile information.
     
     Args:
-        uid (str): The unique identifier of the Weibo user
+        uid (): The unique identifier of the Weibo user
         ctx (Context): MCP context object
         
     Returns:
         dict: Dictionary containing user profile information
     """
-    return await crawler.extract_weibo_profile(str(uid))
+    return await crawler.extract_weibo_profile(uid)
 
 @mcp.tool()
-async def get_feeds(uid: str, ctx: Context, limit: int) -> list[dict]:
+async def get_feeds(uid: int, ctx: Context, limit: int) -> list[dict]:
     """
     Get a Weibo user's feeds (posts).
     
     Args:
-        uid (Union[int, str]): The unique identifier of the Weibo user
+        uid (int): The unique identifier of the Weibo user
         ctx (Context): MCP context object
         limit (int): Maximum number of feeds to return, None for no limit
         
