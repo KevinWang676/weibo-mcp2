@@ -27,11 +27,8 @@ jobs:
         uv pip install build twine
     
     - name: Build package
-      run: uv pip build
+      run: uv build
     
     - name: Publish to PyPI
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
-        uv pip run twine upload dist/* 
+        uv publish 
