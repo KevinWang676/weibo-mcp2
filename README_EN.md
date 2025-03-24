@@ -42,17 +42,9 @@ From package manager:
 
 ### Tools
 
-- `search_weibo_users`: Used to search for Weibo users
-    - **Input:** `keyword`: Search keyword
-    - **Output:** `WeiboUsers`: A list of Pydantic models containing basic user information
-
-- `extract_weibo_profile`: Get detailed user information
-    - **Input:** `user_id`: User ID
-    - **Output:** `WeiboProfile`: A Pydantic model containing detailed user information
-
-- `extract_weibo_feeds`: Get user posts
-    - **Input:** `user_id`: User ID, `limit`: Number of posts to retrieve
-    - **Output:** `WeiboFeeds`: A list of Pydantic models containing user post information
+- `search_users(keyword, limit)`: Used to search for Weibo users
+- `get_profile(uid)`: Get detailed user information
+- `get_feeds(uid, limit)`: Get user posts
 
 ### Resources   
 

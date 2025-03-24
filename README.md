@@ -37,17 +37,9 @@
 
 ### 工具
 
-- `search_weibo_users`: 用于搜索微博用户
-    - **输入:** `keyword`: 搜索关键词
-    - **输出:** `WeiboUsers`: 包含用户基本信息的 Pydantic 模型列表
-
-- `extract_weibo_profile`: 获取用户详细信息
-    - **输入:** `user_id`: 用户ID
-    - **输出:** `WeiboProfile`: 包含用户详细信息的 Pydantic 模型
-
-- `extract_weibo_feeds`: 获取用户动态
-    - **输入:** `user_id`: 用户ID, `limit`: 获取数量限制
-    - **输出:** `WeiboFeeds`: 包含用户动态信息的 Pydantic 模型列表
+- `search_users(keyword, limit)`: 用于搜索微博用户
+- `get_profile(uid)`: 获取用户详细信息
+- `get_feeds(uid, limit)`: 获取用户动态
 
 ### 资源   
 
