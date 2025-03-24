@@ -56,10 +56,8 @@ _No custom prompts included_
 
 ## Requirements
 
-- Python >= 3.8
+- Python >= 3.10
 - httpx >= 0.24.0
-- pydantic >= 2.0.0
-- fastmcp >= 0.1.0
 
 ## License
 
