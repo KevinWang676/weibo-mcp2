@@ -1,5 +1,6 @@
 from mcp.server.fastmcp import FastMCP, Context
 from .weibo import WeiboCrawler
+from typing import Annotated, Field
 
 # Initialize FastMCP server with name "Weibo"
 mcp = FastMCP("Weibo")
@@ -8,7 +9,11 @@ mcp = FastMCP("Weibo")
 crawler = WeiboCrawler()
 
 @mcp.tool()
-async def search_users(ctx: Context, keyword: str, limit: int) -> list[dict]:
+async def search_users(
+    ctx: Context, 
+    keyword: Annotated[str, Field(description="Search term to find users")], 
+    limit: Annotated[int, Field(description="Maximum number of users to return, defaults to 5", default=5)] = 5
+    ) -> list[dict]:
     """
     Search for Weibo users based on a keyword.
     
@@ -23,7 +28,10 @@ async def search_users(ctx: Context, keyword: str, limit: int) -> list[dict]:
     return await crawler.search_weibo_users(keyword, limit)
 
 @mcp.tool()
-async def get_profile(uid: int, ctx: Context) -> dict:
+async def get_profile(
+    uid: Annotated[int, Field(description="The unique identifier of the Weibo user")],
+    ctx: Context
+    ) -> dict:
     """
     Get a Weibo user's profile information.
     
@@ -37,7 +45,11 @@ async def get_profile(uid: int, ctx: Context) -> dict:
     return await crawler.extract_weibo_profile(uid)
 
 @mcp.tool()
-async def get_feeds(ctx: Context, uid: int, limit: int) -> list[dict]:
+async def get_feeds(
+    ctx: Context, 
+    uid: Annotated[int, Field(description="The unique identifier of the Weibo user")], 
+    limit: Annotated[int, Field(description="Maximum number of feeds to return, defaults to 15", default=15)] = 15,
+    ) -> list[dict]:
     """
     Get a Weibo user's feeds (posts).
     
@@ -52,7 +64,10 @@ async def get_feeds(ctx: Context, uid: int, limit: int) -> list[dict]:
     return await crawler.extract_weibo_feeds(str(uid), limit)
 
 @mcp.tool()
-async def get_hot_search(ctx: Context, limit: int) -> list[dict]:
+async def get_hot_search(
+    ctx: Context, 
+    limit: Annotated[int, Field(description="Maximum number of hot search items to return, defaults to 15", default=15)] = 15
+    ) -> list[dict]:
     """
     Get the current hot search topics on Weibo.
     
@@ -66,7 +81,12 @@ async def get_hot_search(ctx: Context, limit: int) -> list[dict]:
     return await crawler.get_host_search_list(limit)
 
 @mcp.tool()
-async def search_content(ctx: Context, keyword: str, limit: int, page: int) -> list[dict]:
+async def search_content(
+    ctx: Context, 
+    keyword: Annotated[str, Field(description="Search term to find content")], 
+    limit: Annotated[int, Field(description="Maximum number of results to return, defaults to 15", default=15)] = 15, 
+    page: Annotated[int, Field(description="Page number for pagination, defaults to 1", default=1)] = 1
+    ) -> list[dict]:
     """
     Search for content on Weibo based on a keyword.
     

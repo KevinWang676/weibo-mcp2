@@ -17,4 +17,4 @@ HOT_SEARCH_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=106003ty
 # URL template for searching Weibo content
 # {keyword} will be replaced with the search keyword
 # {page} will be replaced with the page number
-SEARCH_CONTENT_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=100103type=1&q={keyword}&page_type=searchall&page={page}''
+SEARCH_CONTENT_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=100103type=1&q={keyword}&page_type=searchall&page={page}'
