@@ -8,13 +8,13 @@ mcp = FastMCP("Weibo")
 crawler = WeiboCrawler()
 
 @mcp.tool()
-async def search_users(keyword: str, ctx: Context, limit: int) -> list[dict]:
+async def search_users(ctx: Context, keyword: str, limit: int) -> list[dict]:
     """
     Search for Weibo users based on a keyword.
     
     Args:
-        keyword (str): Search term to find users
         ctx (Context): MCP context object
+        keyword (str): Search term to find users
         limit (int): Maximum number of users to return
         
     Returns:
@@ -28,23 +28,23 @@ async def get_profile(uid: int, ctx: Context) -> dict:
     Get a Weibo user's profile information.
     
     Args:
-        uid (): The unique identifier of the Weibo user
         ctx (Context): MCP context object
-        
+        uid (int): The unique identifier of the Weibo user
+
     Returns:
         dict: Dictionary containing user profile information
     """
     return await crawler.extract_weibo_profile(uid)
 
 @mcp.tool()
-async def get_feeds(uid: int, ctx: Context, limit: int) -> list[dict]:
+async def get_feeds(ctx: Context, uid: int, limit: int) -> list[dict]:
     """
     Get a Weibo user's feeds (posts).
     
     Args:
-        uid (int): The unique identifier of the Weibo user
         ctx (Context): MCP context object
-        limit (int): Maximum number of feeds to return, None for no limit
+        uid (int): The unique identifier of the Weibo user
+        limit (int): Maximum number of feeds to return
         
     Returns:
         list[dict]: List of dictionaries containing feed information
@@ -58,6 +58,7 @@ async def get_hot_search(ctx: Context, limit: int) -> list[dict]:
     
     Args:
         ctx (Context): MCP context object
+        limit (int): Maximum number of hot search items to return
         
     Returns:
         list[dict]: List of dictionaries containing hot search items
@@ -70,8 +71,9 @@ async def search_content(ctx: Context, keyword: str, limit: int, page: int) -> l
     Search for content on Weibo based on a keyword.
     
     Args:
+    ctx (Context): MCP context object
         keyword (str): Search term to find content
-        ctx (Context): MCP context object
+        limit (int): Maximum number of results to return
         page (int): Page number for pagination
         
     Returns:

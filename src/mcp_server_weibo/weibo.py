@@ -32,13 +32,13 @@ class WeiboCrawler:
                 self.logger.error(f"Unable to eextract profile for uid '{str(uid)}'", exc_info=True)
                 return {}
 
-    async def extract_weibo_feeds(self, uid: int, limit: int) -> list[dict]:
+    async def extract_weibo_feeds(self, uid: int, limit: int = 15) -> list[dict]:
         """
         Extract user's Weibo feeds (posts) with pagination support.
         
         Args:
             uid (int): The unique identifier of the Weibo user
-            limit (int): Maximum number of feeds to extract
+            limit (int): Maximum number of feeds to extract, defaults to 15
             
         Returns:
             list: List of user's Weibo feeds
@@ -60,13 +60,13 @@ class WeiboCrawler:
                 
         return feeds
 
-    async def search_weibo_users(self, keyword: str, limit: int) -> list[SearchResult]:
+    async def search_weibo_users(self, keyword: str, limit: int = 5) -> list[SearchResult]:
         """
         Search for Weibo users based on a keyword.
         
         Args:
             keyword (str): Search term to find users
-            limit (int): Maximum number of users to return
+            limit (int): Maximum number of users to return, defaults to 5
             
         Returns:
             list: List of SearchResult objects containing user information
@@ -88,12 +88,12 @@ class WeiboCrawler:
                 self.logger.error(f"Unable to search users for keyword '{keyword}'", exc_info=True)
                 return []
 
-    async def get_host_search_list(self, limit: int) -> list[HotSearchItem]:
+    async def get_host_search_list(self, limit: int = 15) -> list[HotSearchItem]:
         """
         Get a list of hot search items from Weibo.
 
         Args:
-            limit (int): Maximum number of hot search items to return
+            limit (int): Maximum number of hot search items to return, defaults to 15
 
         Returns:
             list: List of HotSearchItem objects containing hot search information
@@ -134,14 +134,14 @@ class WeiboCrawler:
             self.logger.error('Unable to fetch Weibo hot search list', exc_info=True)
             return []
 
-    async def search_weibo_content(self, keyword: str, limit: int, page: int = 1) -> list[dict]:
+    async def search_weibo_content(self, keyword: str, limit: int = 15, page: int = 1) -> list[dict]:
         """
         Search Weibo content (posts) by keyword.
 
         Args:
             keyword (str): The search keyword
-            limit (int): Maximum number of content results to return
-            page (int, optional): The starting page number (default is 1)
+            limit (int): Maximum number of content results to return, defaults to 15
+            page (int, optional): The starting page number, defaults to 1
 
         Returns:
             list: List of dictionaries containing content search results

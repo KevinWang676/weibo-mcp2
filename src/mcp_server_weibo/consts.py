@@ -12,9 +12,9 @@ PROFILE_URL = 'https://m.weibo.cn/api/container/getIndex?type=uid&value={userId}
 FEEDS_URL = 'https://m.weibo.cn/api/container/getIndex?type=uid&value={userId}&containerid={containerId}&since_id={sinceId}'
 
 # URL for fetching the Weibo hot search list
-HOT_SEARCH_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=106003type%3D25%26t%3D3%26disable_hot%3D1%26filter_type%3Drealtimehot'
+HOT_SEARCH_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=106003type=25&t=3&disable_hot=1&filter_type=realtimehot'
 
 # URL template for searching Weibo content
 # {keyword} will be replaced with the search keyword
 # {page} will be replaced with the page number
-SEARCH_CONTENT_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=100103type%3D1%26q%3D{keyword}&page_type=searchall&page={page}'
+SEARCH_CONTENT_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=100103type=1&q={keyword}&page_type=searchall&page={page}''

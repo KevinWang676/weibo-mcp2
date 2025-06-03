@@ -43,9 +43,11 @@
 
 ### 工具
 
-- `search_users(keyword, limit)`: 用于搜索微博用户
+- `search_users(keyword, limit)`: 搜索微博用户
 - `get_profile(uid)`: 获取用户详细信息
 - `get_feeds(uid, limit)`: 获取用户动态
+- `get_hot_search(limit)`: 获取微博热搜
+- `search_content(keyword, limit, page)`: 搜索微博内容
 
 ### 资源   
 
