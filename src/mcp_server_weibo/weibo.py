@@ -128,7 +128,7 @@ class WeiboCrawler:
                             url=item.get('scheme', '')
                         )
                         hot_search_items.append(hot_search_item)
-                        rank += 1
+                        id += 1
                 return hot_search_items
         except httpx.HTTPError:
             self.logger.error('Unable to fetch Weibo hot search list', exc_info=True)
