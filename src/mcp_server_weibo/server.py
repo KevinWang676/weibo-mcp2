@@ -17,11 +17,6 @@ async def search_users(
     ) -> list[dict]:
     """
     Search for Weibo users based on a keyword.
-    
-    Args:
-        ctx (Context): MCP context object
-        keyword (str): Search term to find users
-        limit (int): Maximum number of users to return
         
     Returns:
         list[dict]: List of dictionaries containing user information
@@ -35,10 +30,6 @@ async def get_profile(
     ) -> dict:
     """
     Get a Weibo user's profile information.
-    
-    Args:
-        ctx (Context): MCP context object
-        uid (int): The unique identifier of the Weibo user
 
     Returns:
         dict: Dictionary containing user profile information
@@ -53,11 +44,6 @@ async def get_feeds(
     ) -> list[dict]:
     """
     Get a Weibo user's feeds (posts).
-    
-    Args:
-        ctx (Context): MCP context object
-        uid (int): The unique identifier of the Weibo user
-        limit (int): Maximum number of feeds to return
         
     Returns:
         list[dict]: List of dictionaries containing feed information
@@ -71,10 +57,6 @@ async def get_hot_search(
     ) -> list[dict]:
     """
     Get the current hot search topics on Weibo.
-    
-    Args:
-        ctx (Context): MCP context object
-        limit (int): Maximum number of hot search items to return
         
     Returns:
         list[dict]: List of dictionaries containing hot search items
@@ -90,12 +72,6 @@ async def search_content(
     ) -> list[dict]:
     """
     Search for content on Weibo based on a keyword.
-    
-    Args:
-    ctx (Context): MCP context object
-        keyword (str): Search term to find content
-        limit (int): Maximum number of results to return
-        page (int): Page number for pagination
         
     Returns:
         list[dict]: List of dictionaries containing search results
