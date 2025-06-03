@@ -1,6 +1,7 @@
-from mcp.server.fastmcp import FastMCP, Context
+from fastmcp import FastMCP, Context
 from .weibo import WeiboCrawler
-from typing import Annotated, Field
+from typing import Annotated
+from pydantic import Field
 
 # Initialize FastMCP server with name "Weibo"
 mcp = FastMCP("Weibo")
