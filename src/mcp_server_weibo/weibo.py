@@ -116,20 +116,15 @@ class WeiboCrawler:
                     return []
 
                 hot_search_items = []
-                rank = 1
+                id = 1
                 for item in hot_search_card['card_group']:
-                    if item.get('desc') and rank <= limit:
-                        values = re.findall(r'\d+', str(item.get('desc_extr')))
-                        hot_value = int(values[0]) if values else 0
-                        tag = None
-                        if item.get('icon'):
-                            icon = item['icon']
-                            tag = icon[icon.rfind('/')+1:].replace('.png', '')
+                    if item.get('desc') and id <= limit:
+                        extr_values = re.findall(r'\d+', str(item.get('desc_extr')))
+                        trending = int(extr_values[0]) if extr_values else 0
                         hot_search_item = HotSearchItem(
-                            keyword=item['desc'],
-                            rank=rank,
-                            hotValue=hot_value,
-                            tag=tag if tag is not None else 0,
+                            description=item['desc'],
+                            id=id,
+                            trending=trending,
                             url=item.get('scheme', '')
                         )
                         hot_search_items.append(hot_search_item)
