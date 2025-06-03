@@ -51,6 +51,35 @@ async def get_feeds(uid: int, ctx: Context, limit: int) -> list[dict]:
     """
     return await crawler.extract_weibo_feeds(str(uid), limit)
 
+@mcp.tool()
+async def get_hot_search(ctx: Context, limit: int) -> list[dict]:
+    """
+    Get the current hot search topics on Weibo.
+    
+    Args:
+        ctx (Context): MCP context object
+        
+    Returns:
+        list[dict]: List of dictionaries containing hot search items
+    """
+    return await crawler.get_host_search_list(limit)
+
+@mcp.tool()
+async def search_content(ctx: Context, keyword: str, limit: int, page: int) -> list[dict]:
+    """
+    Search for content on Weibo based on a keyword.
+    
+    Args:
+        keyword (str): Search term to find content
+        ctx (Context): MCP context object
+        page (int): Page number for pagination
+        
+    Returns:
+        list[dict]: List of dictionaries containing search results
+    """
+    return await crawler.search_weibo_content(keyword, limit, page)
+
+
 if __name__ == "__main__":
     # Run the MCP server using standard input/output for communication
     mcp.run(transport='stdio')

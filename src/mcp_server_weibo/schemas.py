@@ -26,3 +26,20 @@ class SearchResult(BaseModel):
     nickName: str = Field()
     avatarHD: str = Field()
     description: str = Field()
+
+class HotSearchItem(BaseModel):
+    """
+    Data model for a single hot search item on Weibo.
+    
+    Attributes:
+        keyword (str): The search keyword
+        rank (int): Rank of the search item
+        hotValue (int): Popularity value of the search item
+        tag (int): Tag or category identifier for the search item
+        url (str): URL to the search results page
+    """
+    keyword: str = Field()
+    rank: int = Field()
+    hotValue: int = Field()
+    tag: int = Field()
+    url: str

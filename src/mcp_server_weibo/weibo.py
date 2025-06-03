@@ -1,8 +1,9 @@
 import httpx
+import re
 import logging
 from urllib.parse import urlencode
-from .consts import DEFAULT_HEADERS, PROFILE_URL, FEEDS_URL
-from .schemas import PagedFeeds, SearchResult
+from .consts import DEFAULT_HEADERS, PROFILE_URL, FEEDS_URL, HOT_SEARCH_URL, SEARCH_CONTENT_URL
+from .schemas import PagedFeeds, SearchResult, HotSearchItem
 
 class WeiboCrawler:
     """
@@ -87,6 +88,130 @@ class WeiboCrawler:
                 self.logger.error(f"Unable to search users for keyword '{keyword}'", exc_info=True)
                 return []
 
+    async def get_host_search_list(self, limit: int) -> list[HotSearchItem]:
+        """
+        Get a list of hot search items from Weibo.
+
+        Args:
+            limit (int): Maximum number of hot search items to return
+
+        Returns:
+            list: List of HotSearchItem objects containing hot search information
+        """
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(HOT_SEARCH_URL, headers=DEFAULT_HEADERS)
+                data = response.json()
+                cards = data.get('data', {}).get('cards', [])
+                if not cards:
+                    return []
+
+                hot_search_card = None
+                for card in cards:
+                    if 'card_group' in card and isinstance(card['card_group'], list):
+                        hot_search_card = card
+                        break
+
+                if not hot_search_card or 'card_group' not in hot_search_card:
+                    return []
+
+                hot_search_items = []
+                rank = 1
+                for item in hot_search_card['card_group']:
+                    if item.get('desc') and rank <= limit:
+                        values = re.findall(r'\d+', str(item.get('desc_extr')))
+                        hot_value = int(values[0]) if values else 0
+                        tag = None
+                        if item.get('icon'):
+                            icon = item['icon']
+                            tag = icon[icon.rfind('/')+1:].replace('.png', '')
+                        hot_search_item = HotSearchItem(
+                            keyword=item['desc'],
+                            rank=rank,
+                            hotValue=hot_value,
+                            tag=tag if tag is not None else 0,
+                            url=item.get('scheme', '')
+                        )
+                        hot_search_items.append(hot_search_item)
+                        rank += 1
+                return hot_search_items
+        except httpx.HTTPError:
+            self.logger.error('Unable to fetch Weibo hot search list', exc_info=True)
+            return []
+
+    async def search_weibo_content(self, keyword: str, limit: int, page: int = 1) -> list[dict]:
+        """
+        Search Weibo content (posts) by keyword.
+
+        Args:
+            keyword (str): The search keyword
+            limit (int): Maximum number of content results to return
+            page (int, optional): The starting page number (default is 1)
+
+        Returns:
+            list: List of dictionaries containing content search results
+        """
+        results = []
+        current_page = page
+        try:
+            while len(results) < limit:
+                url = SEARCH_CONTENT_URL.format(keyword=keyword, page=current_page)
+                async with httpx.AsyncClient() as client:
+                    response = await client.get(url, headers=DEFAULT_HEADERS)
+                    data = response.json()
+                cards = data.get('data', {}).get('cards', [])
+                content_cards = []
+                for card in cards:
+                    if card.get('card_type') == 9:
+                        content_cards.append(card)
+                    elif 'card_group' in card and isinstance(card['card_group'], list):
+                        content_group = [item for item in card['card_group'] if item.get('card_type') == 9]
+                        content_cards.extend(content_group)
+                if not content_cards:
+                    break
+                for card in content_cards:
+                    if len(results) >= limit:
+                        break
+                    mblog = card.get('mblog')
+                    if not mblog:
+                        continue
+                    pics = [pic['url'] for pic in mblog.get('pics', []) if 'url' in pic] if mblog.get('pics') else []
+                    video_url = None
+                    page_info = mblog.get('page_info')
+                    if page_info and page_info.get('type') == 'video':
+                        video_url = (
+                            page_info.get('media_info', {}).get('stream_url') or
+                            page_info.get('urls', {}).get('mp4_720p_mp4') or
+                            page_info.get('urls', {}).get('mp4_hd_mp4') or
+                            page_info.get('urls', {}).get('mp4_ld_mp4')
+                        )
+                    user = mblog.get('user', {})
+                    content_result = {
+                        'id': mblog.get('id'),
+                        'text': mblog.get('text'),
+                        'created_at': mblog.get('created_at'),
+                        'reposts_count': mblog.get('reposts_count'),
+                        'comments_count': mblog.get('comments_count'),
+                        'attitudes_count': mblog.get('attitudes_count'),
+                        'user': {
+                            'id': user.get('id'),
+                            'screen_name': user.get('screen_name'),
+                            'profile_image_url': user.get('profile_image_url'),
+                            'verified': user.get('verified'),
+                        },
+                        'pics': pics if pics else None,
+                        'video_url': video_url
+                    }
+                    results.append(content_result)
+                current_page += 1
+                cardlist_info = data.get('data', {}).get('cardlistInfo', {})
+                if not cardlist_info.get('page') or str(cardlist_info.get('page')) == '1':
+                    break
+            return results[:limit]
+        except httpx.HTTPError:
+            self.logger.error(f"Unable to search Weibo content for keyword '{keyword}'", exc_info=True)
+            return []
+
     def _to_search_result(self, user: dict) -> SearchResult:
         """
         Convert raw user data to SearchResult object.
@@ -143,6 +268,7 @@ class WeiboCrawler:
             url = FEEDS_URL.format(userId=str(uid), containerId=container_id, sinceId=since_id)
             response = await client.get(url, headers = DEFAULT_HEADERS)
             data = response.json()
+
             new_since_id = data.get("data", {}).get("cardlistInfo", {}).get("since_id", "")
             cards = data.get("data", {}).get("cards", [])
             mblogs = cards
