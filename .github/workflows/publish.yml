@@ -31,6 +31,6 @@ jobs:
     
     - name: Publish to PyPI
       env:
-        UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
       run: |
         uv publish --token $UV_PUBLISH_TOKEN
