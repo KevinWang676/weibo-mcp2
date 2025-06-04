@@ -7,7 +7,7 @@ readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.10"
 dependencies = [
-    "fastmcp>=2.5.2",
+    "fastmcp",
     "httpx",
     "mcp[cli]",
 ]
@@ -23,6 +23,3 @@ mcp-server-weibo = "mcp_server_weibo.server:mcp.run"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[[tool.uv.index]]
-url = "https://mirrors.aliyun.com/pypi/simple/"
