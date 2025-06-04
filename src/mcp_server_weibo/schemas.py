@@ -35,9 +35,9 @@ class HotSearchItem(BaseModel):
         description (str): The description of hot search item
         id (int): Rank of the search item
         trending (int): Popularity value of the hot search item
-        url (str): URL to the search results page
+        url (str): URL to the hot search item
     """
-    description: str = Field()
     id: int = Field()
     trending: int = Field()
+    description: str = Field()
     url: str

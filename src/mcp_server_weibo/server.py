@@ -43,10 +43,10 @@ async def get_feeds(
     limit: Annotated[int, Field(description="Maximum number of feeds to return, defaults to 15", default=15)] = 15,
     ) -> list[dict]:
     """
-    Get a Weibo user's feeds (posts).
+    Get a Weibo user's feeds
         
     Returns:
-        list[dict]: List of dictionaries containing feed information
+        list[dict]: List of dictionaries containing feeds
     """
     return await crawler.extract_weibo_feeds(str(uid), limit)
 

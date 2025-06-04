@@ -106,29 +106,12 @@ class WeiboCrawler:
                 if not cards:
                     return []
 
-                hot_search_card = None
-                for card in cards:
-                    if 'card_group' in card and isinstance(card['card_group'], list):
-                        hot_search_card = card
-                        break
-
+                hot_search_card = next((card for card in cards if 'card_group' in card and isinstance(card['card_group'], list)), None)
                 if not hot_search_card or 'card_group' not in hot_search_card:
                     return []
 
-                hot_search_items = []
-                id = 1
-                for item in hot_search_card['card_group']:
-                    if item.get('desc') and id <= limit:
-                        extr_values = re.findall(r'\d+', str(item.get('desc_extr')))
-                        trending = int(extr_values[0]) if extr_values else 0
-                        hot_search_item = HotSearchItem(
-                            description=item['desc'],
-                            id=id,
-                            trending=trending,
-                            url=item.get('scheme', '')
-                        )
-                        hot_search_items.append(hot_search_item)
-                        id += 1
+                items = [item for item in hot_search_card['card_group'] if item.get('desc')]
+                hot_search_items = list(map(lambda pair: self._to_hot_search_item({**pair[1], 'id': pair[0]}), enumerate(items[:limit])))
                 return hot_search_items
         except httpx.HTTPError:
             self.logger.error('Unable to fetch Weibo hot search list', exc_info=True)
@@ -222,6 +205,25 @@ class WeiboCrawler:
             nickName=user['screen_name'], 
             avatarHD=user['avatar_hd'],
             description=user['description']
+        )
+    
+    def _to_hot_search_item(self, item: dict) -> HotSearchItem:
+        """
+        Convert raw hot search item data to HotSearchItem object.
+        
+        Args:
+            item (dict): Raw hot search item data from Weibo API
+            
+        Returns:
+            HotSearchItem: Formatted hot search item information
+        """
+        extr_values = re.findall(r'\d+', str(item.get('desc_extr')))
+        trending = int(extr_values[0]) if extr_values else 0
+        return HotSearchItem(
+            id=item['id'],
+            trending=trending,
+            description=item['desc'],
+            url=item.get('scheme', '')
         )
         
     async def _get_container_id(self, client, uid: int):
