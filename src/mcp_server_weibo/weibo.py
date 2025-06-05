@@ -3,7 +3,7 @@ import re
 import logging
 from urllib.parse import urlencode
 from .consts import DEFAULT_HEADERS, PROFILE_URL, FEEDS_URL, HOT_SEARCH_URL, SEARCH_CONTENT_URL
-from .schemas import PagedFeeds, HotSearchItem, FeedItem, UserProfile
+from .schemas import PagedFeeds, TrendingItem, FeedItem, UserProfile
 
 
 class WeiboCrawler:
@@ -63,7 +63,7 @@ class WeiboCrawler:
 
         return feeds
 
-    async def search_users(self, keyword: str, limit: int = 5) -> list[UserProfile]:
+    async def search_users(self, keyword: str, limit: int = 5, page: int = 1) -> list[UserProfile]:
         """
         Search for Weibo users based on a keyword.
 
@@ -76,8 +76,11 @@ class WeiboCrawler:
         """
         async with httpx.AsyncClient() as client:
             try:
-                params = {'containerid': f'100103type=3&q={keyword}&t=',
-                          'page_type': 'searchall'}
+                params = {
+                    'containerid': f'100103type=3&q={keyword}&t=',
+                    'page_type': 'searchall',
+                    'page': page,
+                }
                 encoded_params = urlencode(params)
 
                 response = await client.get(f'https://m.weibo.cn/api/container/getIndex?{encoded_params}', headers=DEFAULT_HEADERS)
@@ -93,7 +96,7 @@ class WeiboCrawler:
                     f"Unable to search users for keyword '{keyword}'", exc_info=True)
                 return []
 
-    async def get_host_search_list(self, limit: int = 15) -> list[HotSearchItem]:
+    async def get_trendings(self, limit: int = 15) -> list[TrendingItem]:
         """
         Get a list of hot search items from Weibo.
 
@@ -118,8 +121,7 @@ class WeiboCrawler:
 
                 items = [item for item in hot_search_card['card_group']
                          if item.get('desc')]
-                hot_search_items = list(map(lambda pair: self._to_hot_search_item(
-                    {**pair[1], 'id': pair[0]}), enumerate(items[:limit])))
+                hot_search_items = list(map(lambda pair: self._to_trending_item({**pair[1], 'id': pair[0]}), enumerate(items[:limit])))
                 return hot_search_items
         except httpx.HTTPError:
             self.logger.error(
@@ -182,6 +184,40 @@ class WeiboCrawler:
                 f"Unable to search Weibo content for keyword '{keyword}'", exc_info=True)
             return []
 
+    async def search_topics(self, keyword: str, limit: int = 15, page: int = 1) -> list[dict]:
+        """
+        Search Weibo topics by keyword.
+
+        Args:
+            keyword (str): The search keyword
+            limit (int): Maximum number of topic results to return, defaults to 15
+            page (int, optional): The starting page number, defaults to 1
+
+        Returns:
+            list[dict: List of dict containing topic search results
+        """
+        async with httpx.AsyncClient() as client:
+            try:
+                params = {
+                    'containerid': f'100103type=38&q={keyword}&t=',
+                    'page_type': 'searchall',
+                    'page': page,
+                }
+                encoded_params = urlencode(params)
+
+                response = await client.get(f'https://m.weibo.cn/api/container/getIndex?{encoded_params}', headers=DEFAULT_HEADERS)
+                result = response.json()
+                cards = result["data"]["cards"]
+                if len(cards) < 1:
+                    return []
+                else:
+                    cardGroup = cards[0]['card_group']
+                    return [self._to_topic_item(item) for item in cardGroup][:limit]
+            except httpx.HTTPError:
+                self.logger.error(
+                    f"Unable to search users for keyword '{keyword}'", exc_info=True)
+                return []
+
     async def _get_container_id(self, client, uid: int):
         """
         Get the container ID for a user's Weibo feed.
@@ -234,7 +270,7 @@ class WeiboCrawler:
                 f"Unable to extract feeds for uid '{str(uid)}'", exc_info=True)
             return PagedFeeds(SinceId=None, Feeds=[])
     
-    def _to_hot_search_item(self, item: dict) -> HotSearchItem:
+    def _to_trending_item(self, item: dict) -> TrendingItem:
         """
         Convert raw hot search item data to HotSearchItem object.
 
@@ -246,7 +282,7 @@ class WeiboCrawler:
         """
         extr_values = re.findall(r'\d+', str(item.get('desc_extr')))
         trending = int(extr_values[0]) if extr_values else 0
-        return HotSearchItem(
+        return TrendingItem(
             id=item['id'],
             trending=trending,
             description=item['desc'],
@@ -316,3 +352,20 @@ class WeiboCrawler:
             verified_reason = user.get('verified_reason', ''),
             gender = user.get('gender', '')
         )
+    
+    def _to_topic_item(self, item: dict) -> dict:
+        """
+        Convert raw topic data to a formatted dictionary.
+
+        Args:
+            item (dict): Raw topic data from Weibo API
+
+        Returns:
+            dict: Formatted topic information
+        """
+        return {
+            'title': item['title_sub'],
+            'desc1': item.get('desc1', ''),
+            'desc2': item.get('desc2', ''),
+            'url': item.get('scheme', '')
+        }

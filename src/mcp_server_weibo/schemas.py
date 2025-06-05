@@ -72,7 +72,7 @@ class PagedFeeds(BaseModel):
     SinceId: Union[int, str] = Field()
     Feeds: list[FeedItem] = Field()
 
-class HotSearchItem(BaseModel):
+class TrendingItem(BaseModel):
     """
     Data model for a single hot search item on Weibo.
     

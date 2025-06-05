@@ -14,7 +14,8 @@ crawler = WeiboCrawler()
 async def search_users(
     ctx: Context, 
     keyword: Annotated[str, Field(description="Search term to find users")], 
-    limit: Annotated[int, Field(description="Maximum number of users to return, defaults to 5", default=5)] = 5
+    limit: Annotated[int, Field(description="Maximum number of users to return, defaults to 5", default=5)] = 5,
+    page: Annotated[int, Field(description="Page number for pagination, defaults to 1", default=1)] = 1
     ) -> list[dict]:
     """
     Search for Weibo users based on a keyword.
@@ -22,7 +23,7 @@ async def search_users(
     Returns:
         list[dict]: List of dictionaries containing user information
     """
-    return await crawler.search_users(keyword, limit)
+    return await crawler.search_users(keyword, limit, page)
 
 @mcp.tool()
 async def get_profile(
@@ -52,7 +53,7 @@ async def get_feeds(
     return await crawler.get_feeds(str(uid), limit)
 
 @mcp.tool()
-async def get_hot_search(
+async def get_trendings(
     ctx: Context, 
     limit: Annotated[int, Field(description="Maximum number of hot search items to return, defaults to 15", default=15)] = 15
     ) -> list[dict]:
@@ -62,7 +63,7 @@ async def get_hot_search(
     Returns:
         list[dict]: List of dictionaries containing hot search items
     """
-    return await crawler.get_host_search_list(limit)
+    return await crawler.get_trendings(limit)
 
 @mcp.tool()
 async def search_content(
@@ -78,6 +79,21 @@ async def search_content(
         list[dict]: List of dictionaries containing search results
     """
     return await crawler.search_content(keyword, limit, page)
+
+@mcp.tool()
+async def search_topics(
+    ctx: Context, 
+    keyword: Annotated[str, Field(description="Search term to find content")], 
+    limit: Annotated[int, Field(description="Maximum number of results to return, defaults to 15", default=15)] = 15, 
+    page: Annotated[int, Field(description="Page number for pagination, defaults to 1", default=1)] = 1
+) -> list[dict]:
+    """
+    Search for topics on Weibo based on a keyword.
+        
+    Returns:
+        list[dict]: List of dictionaries containing search results
+    """
+    return await crawler.search_topics(keyword, limit, page)
 
 def run_as_streamable_http():
     """
