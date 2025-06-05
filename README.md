@@ -43,7 +43,8 @@
 
 ### 工具
 
-- `search_users(keyword, limit)`: 搜索微博用户。返回值示例如下：
+#### search_users(keyword, limit)
+描述：搜索微博用户。返回值示例如下：
 ```json
 [
   {
@@ -61,7 +62,8 @@
   }
 ]
 ```
--  `get_profile(uid)`：获取用户详细信息。返回值示例如下：
+#### get_profile(uid)
+描述：获取用户详细信息。返回值示例如下：
 ```json
 {
   "id": 1749127163,
@@ -77,7 +79,8 @@
   "gender": "m"
 }
 ```
-- `get_feeds(uid, limit)`: 获取用户动态。返回值示例如下：
+#### get_feeds(uid, limit)
+描述: 获取用户动态。返回值示例如下：
 ```json
 [
   {
@@ -113,7 +116,8 @@
   }
 ]
 ```
-- `get_hot_search(limit)`: 获取微博热搜。返回值示例如下：
+#### get_hot_search(limit)
+描述：获取微博热搜。返回值示例如下：
 ```json
 [
   {
@@ -142,7 +146,8 @@
   }
 ]
 ```
-- `search_content(keyword, limit, page)`: 搜索微博内容。返回值示例如下：
+#### search_content(keyword, limit, page)
+描述: 搜索微博内容。返回值示例如下：
 ```json
 [
   {

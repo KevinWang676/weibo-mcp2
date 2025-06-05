@@ -44,7 +44,8 @@ From package manager:
 
 ### Tools
 
-- `search_users(keyword, limit)`: Search for Weibo users. Example return value:
+#### search_users(keyword, limit)
+Description: Search for Weibo users. Example return value:
 
   ```json
   [
@@ -64,7 +65,8 @@ From package manager:
   ]
   ```
 
-- `get_profile(uid)`: Get detailed user information. Example return value:
+#### get_profile(uid)
+Description: Get detailed user information. Example return value:
 
   ```json
   {
@@ -82,7 +84,8 @@ From package manager:
   }
   ```
 
-- `get_feeds(uid, limit)`: Get user posts. Example return value:
+#### get_feeds(uid, limit)
+Description: Get user posts. Example return value:
 
   ```json
   [
@@ -120,7 +123,8 @@ From package manager:
   ]
   ```
 
-- `get_hot_search(limit)`: Get Weibo hot search. Example return value:
+- #### get_hot_search(limit)
+Description: Get Weibo hot search. Example return value:
 
   ```json
   [
@@ -139,7 +143,8 @@ From package manager:
   ]
   ```
 
-- `search_content(keyword, limit, page)`: Search Weibo posts. Example return value:
+#### search_content(keyword, limit, page)
+Description: Search Weibo posts. Example return value:
 
   ```json
   [
