@@ -62,6 +62,7 @@
   }
 ]
 ```
+
 #### get_profile(uid)
 描述：获取用户详细信息。返回值示例如下：
 ```json
@@ -79,6 +80,7 @@
   "gender": "m"
 }
 ```
+
 #### get_feeds(uid, limit)
 描述: 获取用户动态。返回值示例如下：
 ```json
@@ -116,7 +118,8 @@
   }
 ]
 ```
-#### get_hot_search(limit)
+
+#### get_trendings(limit)
 描述：获取微博热搜。返回值示例如下：
 ```json
 [
@@ -146,8 +149,9 @@
   }
 ]
 ```
+
 #### search_content(keyword, limit, page)
-描述: 搜索微博内容。返回值示例如下：
+描述：搜索微博内容。返回值示例如下：
 ```json
 [
   {
@@ -247,6 +251,31 @@
       }
     ],
     "videos": {}
+  }
+]
+```
+
+#### search_topics(keyword, limit, page)
+描述：搜索微博话题。返回值示例如下：
+```json
+[
+  {
+    "title": "#许嵩#",
+    "desc1": "",
+    "desc2": "1913.8万讨论 26.8亿阅读",
+    "url": "https://m.weibo.cn/search?containerid=231522type%3D1%26t%3D10%26q%3D%23%E8%AE%B8%E5%B5%A9%23&isnewpage=1"
+  },
+  {
+    "title": "#许嵩呼吸之野演唱会#",
+    "desc1": "",
+    "desc2": "1738.4万讨论 6.9亿阅读",
+    "url": "https://m.weibo.cn/search?containerid=231522type%3D1%26t%3D10%26q%3D%23%E8%AE%B8%E5%B5%A9%E5%91%BC%E5%90%B8%E4%B9%8B%E9%87%8E%E6%BC%94%E5%94%B1%E4%BC%9A%23&extparam=%23%E8%AE%B8%E5%B5%A9%E5%91%BC%E5%90%B8%E4%B9%8B%E9%87%8E%E6%BC%94%E5%94%B1%E4%BC%9A%23"
+  },
+  {
+    "title": "#冯禧许嵩疑分手#",
+    "desc1": "",
+    "desc2": "6157讨论 8040.5万阅读",
+    "url": "https://m.weibo.cn/search?containerid=231522type%3D1%26t%3D10%26q%3D%23%E5%86%AF%E7%A6%A7%E8%AE%B8%E5%B5%A9%E7%96%91%E5%88%86%E6%89%8B%23&extparam=%23%E5%86%AF%E7%A6%A7%E8%AE%B8%E5%B5%A9%E7%96%91%E5%88%86%E6%89%8B%23"
   }
 ]
 ```
