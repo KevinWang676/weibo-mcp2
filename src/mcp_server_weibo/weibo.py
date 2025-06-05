@@ -3,45 +3,48 @@ import re
 import logging
 from urllib.parse import urlencode
 from .consts import DEFAULT_HEADERS, PROFILE_URL, FEEDS_URL, HOT_SEARCH_URL, SEARCH_CONTENT_URL
-from .schemas import PagedFeeds, SearchResult, HotSearchItem
+from .schemas import PagedFeeds, HotSearchItem, FeedItem, UserProfile
+
 
 class WeiboCrawler:
     """
     A crawler class for extracting data from Weibo (Chinese social media platform).
     Provides functionality to fetch user profiles, feeds, and search for users.
     """
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    async def extract_weibo_profile(self, uid: int) -> dict:
+    async def get_profile(self, uid: int) -> UserProfile:
         """
         Extract user profile information from Weibo.
-        
+
         Args:
             uid (int): The unique identifier of the Weibo user
-            
+
         Returns:
-            dict: User profile information or empty dict if extraction fails
+            UserProfile: User profile information or empty dict if extraction fails
         """
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.get(PROFILE_URL.format(userId=uid), headers=DEFAULT_HEADERS)
                 result = response.json()
-                return result["data"]["userInfo"]
+                return self._to_user_profile(result["data"]["userInfo"])
             except httpx.HTTPError:
-                self.logger.error(f"Unable to eextract profile for uid '{str(uid)}'", exc_info=True)
+                self.logger.error(
+                    f"Unable to eextract profile for uid '{str(uid)}'", exc_info=True)
                 return {}
 
-    async def extract_weibo_feeds(self, uid: int, limit: int = 15) -> list[dict]:
+    async def get_feeds(self, uid: int, limit: int = 15) -> list[FeedItem]:
         """
         Extract user's Weibo feeds (posts) with pagination support.
-        
+
         Args:
             uid (int): The unique identifier of the Weibo user
             limit (int): Maximum number of feeds to extract, defaults to 15
-            
+
         Returns:
-            list: List of user's Weibo feeds
+            list[FeedItem]: List of user's Weibo feeds
         """
         feeds = []
         sinceId = ''
@@ -57,23 +60,24 @@ class WeiboCrawler:
                 sinceId = pagedFeeds.SinceId
                 if not sinceId:
                     break
-                
+
         return feeds
 
-    async def search_weibo_users(self, keyword: str, limit: int = 5) -> list[SearchResult]:
+    async def search_users(self, keyword: str, limit: int = 5) -> list[UserProfile]:
         """
         Search for Weibo users based on a keyword.
-        
+
         Args:
             keyword (str): Search term to find users
             limit (int): Maximum number of users to return, defaults to 5
-            
+
         Returns:
-            list: List of SearchResult objects containing user information
+            list[UserProfile]: List of UserProfile objects containing user information
         """
         async with httpx.AsyncClient() as client:
             try:
-                params = {'containerid': f'100103type=3&q={keyword}&t=', 'page_type': 'searchall'}
+                params = {'containerid': f'100103type=3&q={keyword}&t=',
+                          'page_type': 'searchall'}
                 encoded_params = urlencode(params)
 
                 response = await client.get(f'https://m.weibo.cn/api/container/getIndex?{encoded_params}', headers=DEFAULT_HEADERS)
@@ -83,9 +87,10 @@ class WeiboCrawler:
                     return []
                 else:
                     cardGroup = cards[1]['card_group']
-                    return [self._to_search_result(item['user']) for item in cardGroup][:limit]
+                    return [self._to_user_profile(item['user']) for item in cardGroup][:limit]
             except httpx.HTTPError:
-                self.logger.error(f"Unable to search users for keyword '{keyword}'", exc_info=True)
+                self.logger.error(
+                    f"Unable to search users for keyword '{keyword}'", exc_info=True)
                 return []
 
     async def get_host_search_list(self, limit: int = 15) -> list[HotSearchItem]:
@@ -96,7 +101,7 @@ class WeiboCrawler:
             limit (int): Maximum number of hot search items to return, defaults to 15
 
         Returns:
-            list: List of HotSearchItem objects containing hot search information
+            list[HotSearchItem]: List of HotSearchItem objects containing hot search information
         """
         try:
             async with httpx.AsyncClient() as client:
@@ -106,18 +111,22 @@ class WeiboCrawler:
                 if not cards:
                     return []
 
-                hot_search_card = next((card for card in cards if 'card_group' in card and isinstance(card['card_group'], list)), None)
+                hot_search_card = next((card for card in cards if 'card_group' in card and isinstance(
+                    card['card_group'], list)), None)
                 if not hot_search_card or 'card_group' not in hot_search_card:
                     return []
 
-                items = [item for item in hot_search_card['card_group'] if item.get('desc')]
-                hot_search_items = list(map(lambda pair: self._to_hot_search_item({**pair[1], 'id': pair[0]}), enumerate(items[:limit])))
+                items = [item for item in hot_search_card['card_group']
+                         if item.get('desc')]
+                hot_search_items = list(map(lambda pair: self._to_hot_search_item(
+                    {**pair[1], 'id': pair[0]}), enumerate(items[:limit])))
                 return hot_search_items
         except httpx.HTTPError:
-            self.logger.error('Unable to fetch Weibo hot search list', exc_info=True)
+            self.logger.error(
+                'Unable to fetch Weibo hot search list', exc_info=True)
             return []
 
-    async def search_weibo_content(self, keyword: str, limit: int = 15, page: int = 1) -> list[dict]:
+    async def search_content(self, keyword: str, limit: int = 15, page: int = 1) -> list[FeedItem]:
         """
         Search Weibo content (posts) by keyword.
 
@@ -127,93 +136,111 @@ class WeiboCrawler:
             page (int, optional): The starting page number, defaults to 1
 
         Returns:
-            list: List of dictionaries containing content search results
+            list[FeedItem]: List of FeedItem objects containing content search results
         """
         results = []
         current_page = page
         try:
             while len(results) < limit:
                 url = SEARCH_CONTENT_URL.format(keyword=keyword, page=current_page)
+
                 async with httpx.AsyncClient() as client:
                     response = await client.get(url, headers=DEFAULT_HEADERS)
                     data = response.json()
+
                 cards = data.get('data', {}).get('cards', [])
                 content_cards = []
                 for card in cards:
                     if card.get('card_type') == 9:
                         content_cards.append(card)
                     elif 'card_group' in card and isinstance(card['card_group'], list):
-                        content_group = [item for item in card['card_group'] if item.get('card_type') == 9]
+                        content_group = [
+                            item for item in card['card_group'] if item.get('card_type') == 9]
                         content_cards.extend(content_group)
+
                 if not content_cards:
                     break
+
                 for card in content_cards:
                     if len(results) >= limit:
                         break
+
                     mblog = card.get('mblog')
                     if not mblog:
                         continue
-                    pics = [pic['url'] for pic in mblog.get('pics', []) if 'url' in pic] if mblog.get('pics') else []
-                    video_url = None
-                    page_info = mblog.get('page_info')
-                    if page_info and page_info.get('type') == 'video':
-                        video_url = (
-                            page_info.get('media_info', {}).get('stream_url') or
-                            page_info.get('urls', {}).get('mp4_720p_mp4') or
-                            page_info.get('urls', {}).get('mp4_hd_mp4') or
-                            page_info.get('urls', {}).get('mp4_ld_mp4')
-                        )
-                    user = mblog.get('user', {})
-                    content_result = {
-                        'id': mblog.get('id'),
-                        'text': mblog.get('text'),
-                        'created_at': mblog.get('created_at'),
-                        'reposts_count': mblog.get('reposts_count'),
-                        'comments_count': mblog.get('comments_count'),
-                        'attitudes_count': mblog.get('attitudes_count'),
-                        'user': {
-                            'id': user.get('id'),
-                            'screen_name': user.get('screen_name'),
-                            'profile_image_url': user.get('profile_image_url'),
-                            'verified': user.get('verified'),
-                        },
-                        'pics': pics if pics else None,
-                        'video_url': video_url
-                    }
+
+                    content_result = self._to_feed_item(mblog)
                     results.append(content_result)
+
                 current_page += 1
                 cardlist_info = data.get('data', {}).get('cardlistInfo', {})
                 if not cardlist_info.get('page') or str(cardlist_info.get('page')) == '1':
                     break
             return results[:limit]
         except httpx.HTTPError:
-            self.logger.error(f"Unable to search Weibo content for keyword '{keyword}'", exc_info=True)
+            self.logger.error(
+                f"Unable to search Weibo content for keyword '{keyword}'", exc_info=True)
             return []
 
-    def _to_search_result(self, user: dict) -> SearchResult:
+    async def _get_container_id(self, client, uid: int):
         """
-        Convert raw user data to SearchResult object.
-        
+        Get the container ID for a user's Weibo feed.
+
         Args:
-            user (dict): Raw user data from Weibo API
-            
+            client (httpx.AsyncClient): HTTP client instance
+            uid (int): The unique identifier of the Weibo user
+
         Returns:
-            SearchResult: Formatted user information
+            str: Container ID for the user's feed or None if extraction fails
         """
-        return SearchResult(
-            id=user['id'], 
-            nickName=user['screen_name'], 
-            avatarHD=user['avatar_hd'],
-            description=user['description']
-        )
+        try:
+            response = await client.get(PROFILE_URL.format(userId=str(uid)), headers=DEFAULT_HEADERS)
+            data = response.json()
+            tabs_info = data.get("data", {}).get(
+                "tabsInfo", {}).get("tabs", [])
+            for tab in tabs_info:
+                if tab.get("tabKey") == "weibo":
+                    return tab.get("containerid")
+        except httpx.HTTPError:
+            self.logger.error(
+                f"Unable to extract containerId for uid '{str(uid)}'", exc_info=True)
+            return None
+
+    async def _extract_feeds(self, client, uid: int, container_id: str, since_id: str):
+        """
+        Extract a single page of Weibo feeds for a user.
+
+        Args:
+            client (httpx.AsyncClient): HTTP client instance
+            uid (int): The unique identifier of the Weibo user
+            container_id (str): Container ID for the user's feed
+            since_id (str): ID of the last feed for pagination
+
+        Returns:
+            PagedFeeds: Object containing feeds and next page's since_id
+        """
+        try:
+            url = FEEDS_URL.format(userId=str(uid), containerId=container_id, sinceId=since_id)
+            response = await client.get(url, headers=DEFAULT_HEADERS)
+            data = response.json()
+
+            new_since_id = data.get("data", {}).get("cardlistInfo", {}).get("since_id", "")
+            cards = data.get("data", {}).get("cards", [])
+            feeds = list(map(lambda x: self._to_feed_item(x.get('mblog', {})), cards))
+
+            return PagedFeeds(SinceId=new_since_id, Feeds=feeds)
+        except httpx.HTTPError:
+            self.logger.error(
+                f"Unable to extract feeds for uid '{str(uid)}'", exc_info=True)
+            return PagedFeeds(SinceId=None, Feeds=[])
     
     def _to_hot_search_item(self, item: dict) -> HotSearchItem:
         """
         Convert raw hot search item data to HotSearchItem object.
-        
+
         Args:
             item (dict): Raw hot search item data from Weibo API
-            
+
         Returns:
             HotSearchItem: Formatted hot search item information
         """
@@ -225,55 +252,67 @@ class WeiboCrawler:
             description=item['desc'],
             url=item.get('scheme', '')
         )
-        
-    async def _get_container_id(self, client, uid: int):
-        """
-        Get the container ID for a user's Weibo feed.
-        
-        Args:
-            client (httpx.AsyncClient): HTTP client instance
-            uid (int): The unique identifier of the Weibo user
-            
-        Returns:
-            str: Container ID for the user's feed or None if extraction fails
-        """
-        try:
-            response = await client.get(PROFILE_URL.format(userId=str(uid)), headers=DEFAULT_HEADERS)
-            data = response.json()
-            tabs_info = data.get("data", {}).get("tabsInfo", {}).get("tabs", [])
-            for tab in tabs_info:
-                if tab.get("tabKey") == "weibo":
-                    return tab.get("containerid")
-        except httpx.HTTPError:
-            self.logger.error(f"Unable to extract containerId for uid '{str(uid)}'", exc_info=True)
-            return None
 
-    async def _extract_feeds(self, client, uid: int, container_id: str, since_id: str):
+    def _to_feed_item(self, mblog: dict) -> FeedItem:
         """
-        Extract a single page of Weibo feeds for a user.
-        
-        Args:
-            client (httpx.AsyncClient): HTTP client instance
-            uid (int): The unique identifier of the Weibo user
-            container_id (str): Container ID for the user's feed
-            since_id (str): ID of the last feed for pagination
-            
-        Returns:
-            PagedFeeds: Object containing feeds and next page's since_id
-        """
-        try:
-            url = FEEDS_URL.format(userId=str(uid), containerId=container_id, sinceId=since_id)
-            response = await client.get(url, headers = DEFAULT_HEADERS)
-            data = response.json()
+        Convert a raw mblog data to FeedItem object.
 
-            new_since_id = data.get("data", {}).get("cardlistInfo", {}).get("since_id", "")
-            cards = data.get("data", {}).get("cards", [])
-            mblogs = cards
-            
-            if mblogs:
-                return PagedFeeds(SinceId=new_since_id, Feeds=mblogs)
-            else:
-                return PagedFeeds(SinceId=new_since_id, Feeds=[])
-        except httpx.HTTPError:
-            self.logger.error(f"Unable to extract feeds for uid '{str(uid)}'", exc_info=True)
-            return PagedFeeds(SinceId=None, Feeds=[])
+        Args:
+            mblog (dict): Raw mblog data from Weibo API
+
+        Returns:
+            FeedItem: Formatted feed item information
+        """
+        pics = [pic for pic in mblog.get('pics', []) if 'url' in pic] if mblog.get('pics') else []
+        pics = [{'thumbnail': pic['url'], 'large': pic['large']['url']} for pic in pics] if pics else []
+
+        videos = {}
+        page_info = mblog.get('page_info')
+        if page_info and page_info.get('type') == 'video':
+            if 'media_info' in page_info:
+                videos['stream_url'] = page_info['media_info'].get('stream_url', '')
+                videos['stream_url_hd'] = page_info['media_info'].get('stream_url_hd', '')
+            elif 'urls' in page_info:
+                videos['mp4_720p_mp4'] = page_info['urls'].get('mp4_720p_mp4', '')
+                videos['mp4_hd_mp4'] = page_info['urls'].get('mp4_hd_mp4', '')
+                videos['mp4_ld_mp4'] = page_info['urls'].get('mp4_ld_mp4', '')
+        
+        user = self._to_user_profile(mblog.get('user', {})) if mblog.get('user') else {}
+        return FeedItem(
+            id = mblog.get('id'),
+            text = mblog.get('text'),
+            source = mblog.get('source'),
+            created_at = mblog.get('created_at'),
+            user = user,
+            comments_count = mblog.get('comments_count', 0),
+            attitudes_count = mblog.get('attitudes_count', 0),
+            reposts_count = mblog.get('reposts_count', 0),
+            raw_text = mblog.get('raw_text', ''),
+            region_name = mblog.get('region_name', ''),
+            pics = pics,
+            videos = videos if videos else {}
+        )
+
+    def _to_user_profile(self, user: dict) -> UserProfile:
+        """
+        Convert raw user data to UserProfile object.
+
+        Args:
+            user (dict): Raw user data from Weibo API
+
+        Returns:
+            UserProfile: Formatted user profile information
+        """
+        return UserProfile(
+            id = user['id'],
+            screen_name = user['screen_name'],
+            profile_image_url = user['profile_image_url'],
+            profile_url = user['profile_url'], 
+            description = user.get('description', ''),
+            follow_count = user.get('follow_count', 0),
+            followers_count = user.get('followers_count', ''),
+            avatar_hd = user.get('avatar_hd', ''),
+            verified = user.get('verified', False),
+            verified_reason = user.get('verified_reason', ''),
+            gender = user.get('gender', '')
+        )

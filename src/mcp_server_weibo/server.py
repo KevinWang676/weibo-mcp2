@@ -2,6 +2,7 @@ from fastmcp import FastMCP, Context
 from .weibo import WeiboCrawler
 from typing import Annotated
 from pydantic import Field
+import os
 
 # Initialize FastMCP server with name "Weibo"
 mcp = FastMCP("Weibo")
@@ -21,7 +22,7 @@ async def search_users(
     Returns:
         list[dict]: List of dictionaries containing user information
     """
-    return await crawler.search_weibo_users(keyword, limit)
+    return await crawler.search_users(keyword, limit)
 
 @mcp.tool()
 async def get_profile(
@@ -34,7 +35,7 @@ async def get_profile(
     Returns:
         dict: Dictionary containing user profile information
     """
-    return await crawler.extract_weibo_profile(uid)
+    return await crawler.get_profile(uid)
 
 @mcp.tool()
 async def get_feeds(
@@ -48,7 +49,7 @@ async def get_feeds(
     Returns:
         list[dict]: List of dictionaries containing feeds
     """
-    return await crawler.extract_weibo_feeds(str(uid), limit)
+    return await crawler.get_feeds(str(uid), limit)
 
 @mcp.tool()
 async def get_hot_search(
@@ -76,10 +77,19 @@ async def search_content(
     Returns:
         list[dict]: List of dictionaries containing search results
     """
-    return await crawler.search_weibo_content(keyword, limit, page)
+    return await crawler.search_content(keyword, limit, page)
+
+def run_as_streamable_http():
+    """
+    Run the MCP server using streamable-http transport, allowing custom port configuration via the PORT environment variable.
+    """
+    port = int(os.environ.get("PORT", 4200))
+    mcp.run(transport="streamable-http", host="0.0.0.0", port=port)
+
+def run_as_stdio():
+    mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":
     # Run the MCP server using standard input/output for communication
     mcp.run(transport='stdio')
-    
