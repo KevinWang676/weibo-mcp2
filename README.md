@@ -45,6 +45,7 @@
 
 #### search_users(keyword, limit)
 描述：搜索微博用户
+
 返回值示例如下：
 ```json
 [
@@ -66,6 +67,7 @@
 
 #### get_profile(uid)
 描述：获取用户详细信息
+
 返回值示例如下：
 ```json
 {
@@ -85,6 +87,7 @@
 
 #### get_feeds(uid, limit)
 描述: 获取用户动态
+
 返回值示例如下：
 ```json
 [
@@ -124,6 +127,7 @@
 
 #### get_trendings(limit)
 描述：获取微博热搜
+
 返回值示例如下：
 ```json
 [
@@ -156,6 +160,7 @@
 
 #### search_content(keyword, limit, page)
 描述：搜索微博内容
+
 返回值示例如下：
 ```json
 [
@@ -262,6 +267,7 @@
 
 #### search_topics(keyword, limit, page)
 描述：搜索微博话题
+
 返回值示例如下：
 ```json
 [
