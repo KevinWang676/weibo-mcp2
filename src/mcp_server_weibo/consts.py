@@ -11,10 +11,5 @@ PROFILE_URL = 'https://m.weibo.cn/api/container/getIndex?type=uid&value={userId}
 # {sinceId}: ID of the last feed for pagination
 FEEDS_URL = 'https://m.weibo.cn/api/container/getIndex?type=uid&value={userId}&containerid={containerId}&since_id={sinceId}'
 
-# URL for fetching the Weibo hot search list
-HOT_SEARCH_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=106003type%3D25%26t%3D3%26disable_hot%3D1%26filter_type%3Drealtimehot'
-
-# URL template for searching Weibo content
-# {keyword} will be replaced with the search keyword
-# {page} will be replaced with the page number
-SEARCH_CONTENT_URL = 'https://m.weibo.cn/api/container/getIndex?containerid=100103type=1&q={keyword}&page_type=searchall&page={page}'
+# URL for searching users, posts, topics and trending
+SEARCH_URL = 'https://m.weibo.cn/api/container/getIndex'

@@ -2,7 +2,7 @@ import httpx
 import re
 import logging
 from urllib.parse import urlencode
-from .consts import DEFAULT_HEADERS, PROFILE_URL, FEEDS_URL, HOT_SEARCH_URL, SEARCH_CONTENT_URL
+from .consts import DEFAULT_HEADERS, PROFILE_URL, FEEDS_URL, SEARCH_URL
 from .schemas import PagedFeeds, TrendingItem, FeedItem, UserProfile
 
 
@@ -77,13 +77,13 @@ class WeiboCrawler:
         async with httpx.AsyncClient() as client:
             try:
                 params = {
-                    'containerid': f'100103type=3&q={keyword}&t=',
+                    'containerid': f'100103type=3&q={keyword}',
                     'page_type': 'searchall',
                     'page': page,
                 }
                 encoded_params = urlencode(params)
 
-                response = await client.get(f'https://m.weibo.cn/api/container/getIndex?{encoded_params}', headers=DEFAULT_HEADERS)
+                response = await client.get(f'{SEARCH_URL}?{encoded_params}', headers=DEFAULT_HEADERS)
                 result = response.json()
                 cards = result["data"]["cards"]
                 if len(cards) < 2:
@@ -107,22 +107,25 @@ class WeiboCrawler:
             list[HotSearchItem]: List of HotSearchItem objects containing hot search information
         """
         try:
+            params = {
+                'containerid': f'106003type=25&t=3&disable_hot=1&filter_type=realtimehot',
+            }
+            encoded_params = urlencode(params)
+            
             async with httpx.AsyncClient() as client:
-                response = await client.get(HOT_SEARCH_URL, headers=DEFAULT_HEADERS)
+                response = await client.get(f'{SEARCH_URL}?{encoded_params}', headers=DEFAULT_HEADERS)
                 data = response.json()
                 cards = data.get('data', {}).get('cards', [])
                 if not cards:
                     return []
 
-                hot_search_card = next((card for card in cards if 'card_group' in card and isinstance(
-                    card['card_group'], list)), None)
+                hot_search_card = next((card for card in cards if 'card_group' in card and isinstance(card['card_group'], list)), None)
                 if not hot_search_card or 'card_group' not in hot_search_card:
                     return []
 
-                items = [item for item in hot_search_card['card_group']
-                         if item.get('desc')]
-                hot_search_items = list(map(lambda pair: self._to_trending_item({**pair[1], 'id': pair[0]}), enumerate(items[:limit])))
-                return hot_search_items
+                items = [item for item in hot_search_card['card_group'] if item.get('desc')]
+                trending_items = list(map(lambda pair: self._to_trending_item({**pair[1], 'id': pair[0]}), enumerate(items[:limit])))
+                return trending_items
         except httpx.HTTPError:
             self.logger.error(
                 'Unable to fetch Weibo hot search list', exc_info=True)
@@ -144,10 +147,15 @@ class WeiboCrawler:
         current_page = page
         try:
             while len(results) < limit:
-                url = SEARCH_CONTENT_URL.format(keyword=keyword, page=current_page)
+                params = {
+                    'containerid': f'100103type=1&q={keyword}',
+                    'page_type': 'searchall',
+                    'page': page,
+                }
+                encoded_params = urlencode(params)
 
                 async with httpx.AsyncClient() as client:
-                    response = await client.get(url, headers=DEFAULT_HEADERS)
+                    response = await client.get(f'{SEARCH_URL}?{encoded_params}', headers=DEFAULT_HEADERS)
                     data = response.json()
 
                 cards = data.get('data', {}).get('cards', [])
@@ -199,7 +207,7 @@ class WeiboCrawler:
         async with httpx.AsyncClient() as client:
             try:
                 params = {
-                    'containerid': f'100103type=38&q={keyword}&t=',
+                    'containerid': f'100103type=38&q={keyword}',
                     'page_type': 'searchall',
                     'page': page,
                 }
