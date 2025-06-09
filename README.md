@@ -10,7 +10,7 @@
 
 ## 安装
 
-从源代码安装：
+* 从源代码安装：
 
 ```json
 {
@@ -26,7 +26,7 @@
   }
 }
 ```
-从包管理器安装：
+* 从包管理器安装：
 
 ```json
 {
@@ -38,7 +38,7 @@
   }
 }
 ```
-从 Docker 安装，请使用以下命令：
+* 从 Docker 安装，请使用以下命令：
 ```bash
 docker build -t mcp-server-weibo .
 docker run -d --name mcp-server-weibo -p 4200:4200 mcp-server-weibo

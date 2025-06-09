@@ -10,7 +10,7 @@ A [Model Context Protocol](https://modelcontextprotocol.io) server for fetching 
 
 ## Installation
 
-From source code:
+* From source code:
 
 ```json
 {
@@ -26,7 +26,7 @@ From source code:
   }
 }
 ```
-From package manager:
+* From package manager:
 
 ```json
 {
@@ -38,7 +38,7 @@ From package manager:
   }
 }
 ```
-From Docker:
+* From Docker:
 ```bash
 docker build -t mcp-server-weibo .
 docker run -d --name mcp-server-weibo -p 4200:4200 mcp-server-weibo
