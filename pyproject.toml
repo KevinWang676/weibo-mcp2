@@ -1,6 +1,6 @@
 [project]
 name = "mcp-server-weibo"
-version = "1.0.1"
+version = "1.0.2"
 description = "A MCP Server for Weibo"
 keywords = ["MCP", "Model Context Protocol", "Weibo", "Python", "Social Networks"]
 readme = "README.md"
@@ -18,7 +18,7 @@ Repository = "https://github.com/qinyuanpei/mcp-server-weibo.git"
 Issues = "https://github.com/qinyuanpei/mcp-server-weibo/issues"
 
 [project.scripts]
-mcp-server-weibo = "mcp_server_weibo.server:mcp.run"
+mcp-server-weibo = "mcp_server_weibo.server:main"
 
 [build-system]
 requires = ["hatchling"]

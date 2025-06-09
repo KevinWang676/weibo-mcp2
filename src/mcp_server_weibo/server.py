@@ -3,6 +3,7 @@ from .weibo import WeiboCrawler
 from typing import Annotated
 from pydantic import Field
 import os
+import sys
 
 # Initialize FastMCP server with name "Weibo"
 mcp = FastMCP("Weibo")
@@ -105,7 +106,16 @@ def run_as_streamable_http():
 def run_as_stdio():
     mcp.run(transport="stdio")
 
+def main():
+    """
+    Entry point for CLI. Use positional argument: [stdio|http], default is stdio if not provided.
+    """
+    mode = sys.argv[1] if len(sys.argv) > 1 else '--stdio'
+    if mode == '--http':
+        run_as_streamable_http()
+    else:
+        run_as_stdio()
+
 
 if __name__ == "__main__":
-    # Run the MCP server using standard input/output for communication
-    mcp.run(transport='stdio')
+    main()

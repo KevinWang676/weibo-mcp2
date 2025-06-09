@@ -14,29 +14,43 @@ From source code:
 
 ```json
 {
-    "mcpServers": {
-        "weibo": {
-            "command": "uvx",
-            "args": [
-                "--from",
-                "git+https://github.com/qinyuanpei/mcp-server-weibo.git",
-                "mcp-server-weibo"
-            ]
-        }
+  "mcpServers": {
+    "weibo": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/qinyuanpei/mcp-server-weibo.git",
+        "mcp-server-weibo"
+      ]
     }
+  }
 }
 ```
-
 From package manager:
 
 ```json
 {
-    "mcpServers": {
-        "weibo": {
-            "command": "uvx",
-            "args": ["mcp-server-weibo"],
-        }
+  "mcpServers": {
+    "weibo": {
+      "command": "uvx",
+      "args": ["mcp-server-weibo"],
     }
+  }
+}
+```
+From Docker:
+```bash
+docker build -t mcp-server-weibo .
+docker run -d --name mcp-server-weibo -p 4200:4200 mcp-server-weibo
+```
+Reference config:
+```json
+{
+  "mcpServers": {
+    "weibo": {
+      "url": "http://localhost:4200/mcp",
+    }
+  }
 }
 ```
 
@@ -46,6 +60,7 @@ From package manager:
 
 #### search_users(keyword, limit)
 Description: Search for Weibo users
+
 Example return value:
 
   ```json
@@ -68,6 +83,7 @@ Example return value:
 
 #### get_profile(uid)
 Description: Get detailed user information
+
 Example return value:
 
   ```json
@@ -88,6 +104,7 @@ Example return value:
 
 #### get_feeds(uid, limit)
 Description: Get user posts
+
 Example return value:
 
   ```json
@@ -127,7 +144,8 @@ Example return value:
   ```
 
 - #### get_hot_search(limit)
-Description: Get Weibo hot search.
+Description: Get Weibo hot search
+
 Example return value:
 
   ```json
@@ -149,6 +167,7 @@ Example return value:
 
 #### search_content(keyword, limit, page)
 Description: Search Weibo posts
+
 Example return value:
 
   ```json

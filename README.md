@@ -14,30 +14,47 @@
 
 ```json
 {
-    "mcpServers": {
-        "weibo": {
-            "command": "uvx",
-            "args": [
-                "--from",
-                "git+https://github.com/qinyuanpei/mcp-server-weibo.git",
-                "mcp-server-weibo"
-            ]
-        }
+  "mcpServers": {
+    "weibo": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/qinyuanpei/mcp-server-weibo.git",
+        "mcp-server-weibo"
+      ]
     }
+  }
 }
 ```
 从包管理器安装：
 
 ```json
 {
-    "mcpServers": {
-        "weibo": {
-            "command": "uvx",
-            "args": ["mcp-server-weibo"],
-        }
+  "mcpServers": {
+    "weibo": {
+      "command": "uvx",
+      "args": ["mcp-server-weibo"],
     }
+  }
 }
 ```
+从 Docker 安装，请使用以下命令：
+```bash
+docker build -t mcp-server-weibo .
+docker run -d --name mcp-server-weibo -p 4200:4200 mcp-server-weibo
+```
+参考配置：
+```json
+{
+  "mcpServers": {
+    "weibo": {
+      "url": "http://localhost:4200/mcp",
+    }
+  }
+}
+```
+
+
 
 ## 组件
 
