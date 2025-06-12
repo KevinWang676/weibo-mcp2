@@ -13,3 +13,8 @@ FEEDS_URL = 'https://m.weibo.cn/api/container/getIndex?type=uid&value={userId}&c
 
 # URL for searching users, posts, topics and trending
 SEARCH_URL = 'https://m.weibo.cn/api/container/getIndex'
+
+# URL template for fetching comments of a specific Weibo post
+# {feed_id}: The ID of the Weibo post
+# {page}: The page number for pagination
+COMMENTS_URL = 'https://m.weibo.cn/api/comments/show?id={feed_id}&page={page}'

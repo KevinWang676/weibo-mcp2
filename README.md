@@ -309,6 +309,33 @@ docker run -d --name mcp-server-weibo -p 4200:4200 mcp-server-weibo
 ]
 ```
 
+#### get_comments(feed_id, page)
+描述：获取指定微博下的评论
+返回值示例如下：
+```json
+[{
+	"id": 5176653778784993,
+	"text": "回复<a href='https://m.weibo.cn/n/需要爱谁'>@需要爱谁</a>:这是openRouter的使用数据。ds除了那波发布的新鲜劲头，主要服务国内市场。国内用户没理由用国内ai还特意找openRouter这个海外中间商",
+	"created_at": "55分钟前",
+	"source": "来自广东",
+	"user": {
+		"id": 1784072130,
+		"screen_name": "呗塔熊",
+		"profile_image_url": "https://tva2.sinaimg.cn/crop.0.0.749.749.180/6a56c7c2jw8f2l1ermz4hj20ku0kt3z8.jpg?KID=imgbed,tva&Expires=1749708042&ssig=eLSiu6Jz5j",
+		"profile_url": "https://m.weibo.cn/u/1784072130?",
+		"description": "",
+		"follow_count": 0,
+		"followers_count": "158",
+		"avatar_hd": "",
+		"verified": false,
+		"verified_reason": "",
+		"gender": ""
+	},
+	"reply_id": 5176636326281776,
+	"reply_text": "DS怎么是0%<span class=\"url-icon\"><img alt=[思考] src=\"https://h5.sinaimg.cn/m/emoticon/icon/default/d_sikao-ff9602dd08.png\" style=\"width:1em; height:1em;\" /></span>"
+}]
+```
+
 ### 资源   
 
 无

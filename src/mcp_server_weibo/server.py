@@ -96,6 +96,20 @@ async def search_topics(
     """
     return await crawler.search_topics(keyword, limit, page)
 
+@mcp.tool()
+async def get_comments(
+    ctx: Context, 
+    feed_id: Annotated[int, Field(description="The unique identifier of the Weibo post")], 
+    page: Annotated[int, Field(description="Page number for pagination, defaults to 1", default=1)] = 1
+    ) -> list[dict]:
+    """
+    Get comments for a specific Weibo post.
+        
+    Returns:
+        list[dict]: List of dictionaries containing comments
+    """
+    return await crawler.get_comments(feed_id, page)
+
 def run_as_streamable_http():
     """
     Run the MCP server using streamable-http transport, allowing custom port configuration via the PORT environment variable.

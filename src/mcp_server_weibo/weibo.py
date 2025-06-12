@@ -2,8 +2,8 @@ import httpx
 import re
 import logging
 from urllib.parse import urlencode
-from .consts import DEFAULT_HEADERS, PROFILE_URL, FEEDS_URL, SEARCH_URL
-from .schemas import PagedFeeds, TrendingItem, FeedItem, UserProfile
+from .consts import DEFAULT_HEADERS, PROFILE_URL, FEEDS_URL, SEARCH_URL, COMMENTS_URL
+from .schemas import PagedFeeds, TrendingItem, FeedItem, UserProfile, CommentItem
 
 
 class WeiboCrawler:
@@ -213,7 +213,7 @@ class WeiboCrawler:
                 }
                 encoded_params = urlencode(params)
 
-                response = await client.get(f'https://m.weibo.cn/api/container/getIndex?{encoded_params}', headers=DEFAULT_HEADERS)
+                response = await client.get(f'{SEARCH_URL}?{encoded_params}', headers=DEFAULT_HEADERS)
                 result = response.json()
                 cards = result["data"]["cards"]
                 if len(cards) < 1:
@@ -225,6 +225,28 @@ class WeiboCrawler:
                 self.logger.error(
                     f"Unable to search users for keyword '{keyword}'", exc_info=True)
                 return []
+
+    async def get_comments(self, feed_id: str, page: int = 1) -> list[CommentItem]:
+        """
+        Get comments for a specific Weibo post.
+
+        Args:
+            feed_id (str): The ID of the Weibo post
+            page (int): The page number for pagination, defaults to 1
+
+        Returns:
+            list[CommentItem]: List of comments for the specified Weibo post
+        """
+        try:
+            async with httpx.AsyncClient() as client:
+                url = COMMENTS_URL.format(feed_id=feed_id, page=page)
+                response = await client.get(url, headers=DEFAULT_HEADERS)
+                data = response.json()
+                comments = data.get('data', {}).get('data', [])
+                return [self._to_comment_item(comment) for comment in comments]
+        except httpx.HTTPError:
+            self.logger.error(f"Unable to fetch comments for feed_id '{feed_id}'", exc_info=True)
+            return []
 
     async def _get_container_id(self, client, uid: int):
         """
@@ -377,3 +399,23 @@ class WeiboCrawler:
             'desc2': item.get('desc2', ''),
             'url': item.get('scheme', '')
         }
+    
+    def _to_comment_item(self, item: dict) -> CommentItem:
+        """
+        Convert raw comment data to CommentItem object.
+
+        Args:
+            item (dict): Raw comment data from Weibo API
+
+        Returns:
+            CommentItem: Formatted comment information
+        """
+        return CommentItem(
+            id = item.get('id'),
+            text = item.get('text'),
+            created_at = item.get('created_at'),
+            user = self._to_user_profile(item.get('user', {})),
+            source=item.get('source', ''),
+            reply_id = item.get('reply_id', None),
+            reply_text = item.get('reply_text', ''),
+        )

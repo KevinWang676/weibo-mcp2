@@ -87,3 +87,22 @@ class TrendingItem(BaseModel):
     description: str = Field()
     url: str
 
+class CommentItem(BaseModel):
+    """
+    Data model for a single comment on a Weibo post.
+    
+    Attributes:
+        id (int): Unique identifier for the comment
+        text (str): Content of the comment
+        created_at (str): Timestamp when the comment was created
+        user (UserProfile): User information associated with the comment
+        like_count (int): Number of likes on the comment
+        reply_count (int): Number of replies to the comment
+    """
+    id: int = Field()
+    text: str = Field()
+    created_at: str = Field()
+    source: str = Field()
+    user: UserProfile = Field()
+    reply_id: Union[int, None] = Field(default=None)
+    reply_text: str = Field(default="")
