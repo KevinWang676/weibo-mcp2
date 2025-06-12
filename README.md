@@ -182,32 +182,6 @@ docker run -d --name mcp-server-weibo -p 4200:4200 mcp-server-weibo
 ```json
 [
   {
-    "id": 5174033353539603,
-    "text": "<a  href=\"https://m.weibo.cn/search?containerid=231522type%3D1%26t%3D10%26q%3D%23%E5%9C%B0%E9%9C%87%E9%A2%84%E8%AD%A6%23&isnewpage=1\" data-hide=\"\"><span class=\"surl-text\">#地震预警#</span></a> 据中国地震预警网，04:31云南大理鹤庆(E100.1,N26.3)附近发生4.7级左右地震，预警网在地震波到达前73秒向昆明发出预警提示，预估烈度0.7度。可下载ICL“地震预警”APP接收预警并获取更多服务，国产手机也可开启操作系统内置地震预警功能 ",
-    "source": "地震预警",
-    "created_at": "Thu Jun 05 04:32:22 +0800 2025",
-    "user": {
-      "id": 2867810960,
-      "screen_name": "成都高新减灾研究所",
-      "profile_image_url": "https://tvax3.sinaimg.cn/crop.0.0.996.996.180/aaef5290ly8gdig1jpisaj20ro0romxi.jpg?KID=imgbed,tva&Expires=1749110036&ssig=JEEuM0wUxA",
-      "profile_url": "https://m.weibo.cn/u/2867810960?",
-      "description": "成都高新减灾研究所成立于汶川地震后，专注于灾害预警技术研发、成果转化及应用。",
-      "follow_count": 307,
-      "followers_count": "34.5万",
-      "avatar_hd": "https://wx3.sinaimg.cn/orj480/aaef5290ly8gdig1jpisaj20ro0romxi.jpg",
-      "verified": true,
-      "verified_reason": "成都高新减灾研究所",
-      "gender": "m"
-    },
-    "comments_count": 33,
-    "attitudes_count": 53,
-    "reposts_count": 1,
-    "raw_text": "",
-    "region_name": "北京",
-    "pics": [],
-    "videos": {}
-  },
-  {
     "id": 5173507416919189,
     "text": "<a  href=\"https://m.weibo.cn/search?containerid=231522type%3D1%26t%3D10%26q%3D%23%E5%90%89%E5%88%A9%E9%93%B6%E6%B2%B3%23&extparam=%23%E5%90%89%E5%88%A9%E9%93%B6%E6%B2%B3%23\" data-hide=\"\"><span class=\"surl-text\">#吉利银河#</span></a><br />省流：<br />1.推荐度系列分为四个等级，一般/可买/推荐/非常推荐。「一般/可买」车型减少展开，想看的人比较多的话，我们会给大家再出详细的视频<br />2.本期非常推荐的有吉利星愿、星耀8 ，推荐有熊猫mini、星舰7、银河E5<br />3.大家还有什么想看的品牌的年中横评也可以在评论下留言  ...<a href=\"/status/5173507416919189\">全文</a>",
     "source": "微博视频号",
