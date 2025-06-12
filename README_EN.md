@@ -106,7 +106,6 @@ Example return value:
 Description: Get user posts
 
 Example return value:
-
 ```json
 [
   {
@@ -175,7 +174,6 @@ Example return value:
     "url": "https://m.weibo.cn/search?containerid=100103type%3D1%26t%3D10%26q%3D%E9%99%88%E6%80%9D%E8%AF%9A%E5%BC%A0%E5%B0%8F%E6%96%90%E9%A6%96%E5%BA%A6%E5%90%88%E4%BD%9C&stream_entry_id=31&isnewpage=1&extparam=seat%3D1%26dgr%3D0%26c_type%3D31%26cate%3D5001%26realpos%3D14%26stream_entry_id%3D31%26lcate%3D5001%26q%3D%25E9%2599%2588%25E6%2580%259D%25E8%25AF%259A%25E5%25BC%25A0%25E5%25B0%258F%25E6%2596%2590%25E9%25A6%2596%25E5%25BA%25A6%25E5%2590%2588%25E4%25BD%259C%26pos%3D13%26band_rank%3D14%26flag%3D1%26filter_type%3Drealtimehot%26display_time%3D1749098276%26pre_seqid%3D17490982767230055147"
   }
 ]
-```
 ```
 
 #### search_content(keyword, limit, page)
@@ -295,25 +293,25 @@ Example return value:
 
 ```json
 [{
-	"id": 5176653778784993,
-	"text": "回复<a href='https://m.weibo.cn/n/需要爱谁'>@需要爱谁</a>:这是openRouter的使用数据。ds除了那波发布的新鲜劲头，主要服务国内市场。国内用户没理由用国内ai还特意找openRouter这个海外中间商",
-	"created_at": "55分钟前",
-	"source": "来自广东",
-	"user": {
-		"id": 1784072130,
-		"screen_name": "呗塔熊",
-		"profile_image_url": "https://tva2.sinaimg.cn/crop.0.0.749.749.180/6a56c7c2jw8f2l1ermz4hj20ku0kt3z8.jpg?KID=imgbed,tva&Expires=1749708042&ssig=eLSiu6Jz5j",
-		"profile_url": "https://m.weibo.cn/u/1784072130?",
-		"description": "",
-		"follow_count": 0,
-		"followers_count": "158",
-		"avatar_hd": "",
-		"verified": false,
-		"verified_reason": "",
-		"gender": ""
-	},
-	"reply_id": 5176636326281776,
-	"reply_text": "DS怎么是0%<span class=\"url-icon\"><img alt=[思考] src=\"https://h5.sinaimg.cn/m/emoticon/icon/default/d_sikao-ff9602dd08.png\" style=\"width:1em; height:1em;\" /></span>"
+  "id": 5176653778784993,
+   "text": "回复<a href='https://m.weibo.cn/n/需要爱谁'>@需要爱谁</a>:这是openRouter的使用数据。ds除了那波发布的新鲜劲头，主要服务国内市场。国内用户没理由用国内ai还特意找openRouter这个海外中间商",
+   "created_at": "55分钟前",
+   "source": "来自广东",
+   "user": {
+      "id": 1784072130,
+      "screen_name": "呗塔熊",
+      "profile_image_url": "https://tva2.sinaimg.cn/crop.0.0.749.749.180/6a56c7c2jw8f2l1ermz4hj20ku0kt3z8.jpg?KID=imgbed,tva&Expires=1749708042&ssig=eLSiu6Jz5j",
+      "profile_url": "https://m.weibo.cn/u/1784072130?",
+      "description": "",
+      "follow_count": 0,
+      "followers_count": "158",
+      "avatar_hd": "",
+      "verified": false,
+      "verified_reason": "",
+      "gender": ""
+   },
+   "reply_id": 5176636326281776,
+   "reply_text": "DS怎么是0%<span class=\"url-icon\"><img alt=[思考] src=\"https://h5.sinaimg.cn/m/emoticon/icon/default/d_sikao-ff9602dd08.png\" style=\"width:1em; height:1em;\" /></span>"
 }]
 ```
 
