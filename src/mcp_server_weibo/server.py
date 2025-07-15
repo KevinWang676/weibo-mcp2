@@ -54,6 +54,20 @@ async def get_feeds(
     return await crawler.get_feeds(str(uid), limit)
 
 @mcp.tool()
+async def get_hot_feeds(
+    ctx: Context, 
+    uid: Annotated[int, Field(description="The unique identifier of the Weibo user")], 
+    limit: Annotated[int, Field(description="Maximum number of feeds to return, defaults to 15", default=15)] = 15,
+    ) -> list[dict]:
+    """
+    Get a Weibo user's hot feeds
+        
+    Returns:
+        list[dict]: List of dictionaries containing hot feeds
+    """
+    return await crawler.get_hot_feeds(uid, limit)
+
+@mcp.tool()
 async def get_trendings(
     ctx: Context, 
     limit: Annotated[int, Field(description="Maximum number of hot search items to return, defaults to 15", default=15)] = 15

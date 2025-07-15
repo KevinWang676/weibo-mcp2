@@ -63,6 +63,35 @@ class WeiboCrawler:
 
         return feeds
 
+    async def get_hot_feeds(self, uid: int, limit: int = 15) -> list[FeedItem]:
+        """
+        Extract hot feeds (posts) from a specific user's Weibo profile.
+
+        Args:
+            uid (int): The unique identifier of the Weibo user
+            limit (int): Maximum number of hot feeds to extract, defaults to 15
+
+        Returns:
+            list[FeedItem]: List of hot feeds from the user's profile
+        """
+        async with httpx.AsyncClient() as client:
+            try:
+                params = {
+                    'containerid': f'231002{str(uid)}_-_HOTMBLOG',
+                    'type': 'uid',
+                    'value': uid,
+                }
+                encoded_params = urlencode(params)
+
+                response = await client.get(f'{SEARCH_URL}?{encoded_params}', headers=DEFAULT_HEADERS)
+                result = response.json()
+                cards = list(filter(lambda x:x['card_type'] == 9, result["data"]["cards"]))
+                feeds = [self._to_feed_item(item['mblog']) for item in cards]
+                return feeds[:limit]
+            except httpx.HTTPError:
+                self.logger.error(f"Unable to extract hot feeds for uid '{str(uid)}'", exc_info=True)
+                return []
+
     async def search_users(self, keyword: str, limit: int = 5, page: int = 1) -> list[UserProfile]:
         """
         Search for Weibo users based on a keyword.
