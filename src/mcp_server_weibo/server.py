@@ -111,6 +111,36 @@ async def search_topics(
     return await crawler.search_topics(keyword, limit, page)
 
 @mcp.tool()
+async def get_followers(
+    ctx: Context, 
+    uid: Annotated[int, Field(description="The unique identifier of the Weibo user")], 
+    limit: Annotated[int, Field(description="Maximum number of followers to return, defaults to 15", default=15)] = 15,
+    page: Annotated[int, Field(description="Page number for pagination, defaults to 1", default=1)] = 1
+    ) -> list[dict]:
+    """
+    Get a Weibo user's followers.
+        
+    Returns:
+        list[dict]: List of dictionaries containing follower information
+    """
+    return await crawler.get_followers(uid, limit, page)
+
+@mcp.tool()
+async def get_fans(
+    ctx: Context, 
+    uid: Annotated[int, Field(description="The unique identifier of the Weibo user")], 
+    limit: Annotated[int, Field(description="Maximum number of fans to return, defaults to 15", default=15)] = 15,
+    page: Annotated[int, Field(description="Page number for pagination, defaults to 1", default=1)] = 1
+    ) -> list[dict]:
+    """
+    Get a Weibo user's fans.
+        
+    Returns:
+        list[dict]: List of dictionaries containing fan information
+    """
+    return await crawler.get_fans(uid, limit, page)
+
+@mcp.tool()
 async def get_comments(
     ctx: Context, 
     feed_id: Annotated[int, Field(description="The unique identifier of the Weibo post")], 

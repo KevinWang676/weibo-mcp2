@@ -276,7 +276,71 @@ class WeiboCrawler:
         except httpx.HTTPError:
             self.logger.error(f"Unable to fetch comments for feed_id '{feed_id}'", exc_info=True)
             return []
+    
+    async def get_followers(self, uid: int, limit: int = 15, page: int = 1) -> list[UserProfile]:
+        """
+        Get followers of a specific Weibo user.
 
+        Args:
+            uid (int): The unique identifier of the Weibo user
+            limit (int): Maximum number of followers to return, defaults to 15
+            page (int): The page number for pagination, defaults to 1
+
+        Returns:
+            list[UserProfile]: List of UserProfile objects containing follower information
+        """
+        async with httpx.AsyncClient() as client:
+            try:
+                params = {
+                    'containerid': f'231051_-_followers_-_{str(uid)}',
+                    'page': page,
+                }
+                encoded_params = urlencode(params)
+
+                response = await client.get(f'{SEARCH_URL}?{encoded_params}', headers=DEFAULT_HEADERS)
+                result = response.json()
+                cards = result["data"]["cards"]
+                if len(cards) < 1:
+                    return []
+                else:
+                    cardGroup = cards[-1]['card_group']
+                    return [self._to_user_profile(item['user']) for item in cardGroup][:limit]
+            except httpx.HTTPError:
+                self.logger.error(f"Unable to get followers for uid '{str(uid)}'", exc_info=True)
+                return []
+
+    async def get_fans(self, uid: int, limit: int = 15, page: int = 1) -> list[UserProfile]:
+        """
+        Get fans of a specific Weibo user.
+
+        Args:
+            uid (int): The unique identifier of the Weibo user
+            limit (int): Maximum number of fans to return, defaults to 15
+            page (int): The page number for pagination, defaults to 1
+
+        Returns:
+            list[UserProfile]: List of UserProfile objects containing fan information
+        """
+        async with httpx.AsyncClient() as client:
+            try:
+                params = {
+                    'containerid': f'231051_-_fans_-_{str(uid)}',
+                    'page': page,
+                }
+                encoded_params = urlencode(params)
+
+                response = await client.get(f'{SEARCH_URL}?{encoded_params}', headers=DEFAULT_HEADERS)
+                result = response.json()
+                cards = result["data"]["cards"]
+                if len(cards) < 1:
+                    return []
+                else:
+                    cardGroup = cards[0]['card_group']
+                    return [self._to_user_profile(item['user']) for item in cardGroup][:limit]
+            except httpx.HTTPError:
+                self.logger.error(f"Unable to get fans for uid '{str(uid)}'", exc_info=True)
+                return []
+             
     async def _get_container_id(self, client, uid: int):
         """
         Get the container ID for a user's Weibo feed.
@@ -297,8 +361,7 @@ class WeiboCrawler:
                 if tab.get("tabKey") == "weibo":
                     return tab.get("containerid")
         except httpx.HTTPError:
-            self.logger.error(
-                f"Unable to extract containerId for uid '{str(uid)}'", exc_info=True)
+            self.logger.error(f"Unable to extract containerId for uid '{str(uid)}'", exc_info=True)
             return None
 
     async def _extract_feeds(self, client, uid: int, container_id: str, since_id: str):
