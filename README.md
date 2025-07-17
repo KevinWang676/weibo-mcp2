@@ -1,6 +1,6 @@
-# Weibo MCP Server
+# Weibo MCP Server 🚀
 
-这是一个基于 [Model Context Protocol](https://modelcontextprotocol.io) 的服务器，用于抓取微博用户信息、动态和搜索功能。该服务器可以帮助获取微博用户的详细信息、动态内容以及进行用户搜索、获取热搜、搜索内容等。
+基于 Model Context Protocol 的微博数据接口服务器 - 实时获取微博用户信息、动态内容、热搜榜单、粉丝关注数据。支持用户搜索、内容搜索、话题分析，为 AI 应用提供完整的微博数据接入方案。
 
 <a href="https://glama.ai/mcp/servers/@qinyuanpei/mcp-server-weibo">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@qinyuanpei/mcp-server-weibo/badge" alt="Weibo Server MCP server" />
@@ -311,6 +311,7 @@ docker run -d --name mcp-server-weibo -p 4200:4200 mcp-server-weibo
 
 #### get_comments(feed_id, page)
 描述：获取指定微博下的评论
+
 返回值示例如下：
 ```json
 [{
@@ -333,6 +334,108 @@ docker run -d --name mcp-server-weibo -p 4200:4200 mcp-server-weibo
 	},
 	"reply_id": 5176636326281776,
 	"reply_text": "DS怎么是0%<span class=\"url-icon\"><img alt=[思考] src=\"https://h5.sinaimg.cn/m/emoticon/icon/default/d_sikao-ff9602dd08.png\" style=\"width:1em; height:1em;\" /></span>"
+}]
+```
+
+#### get_hot_feeds(uid, limit)
+描述：获取热门微博
+
+返回值示例如下：
+```json
+[{
+  "id": 5188923573404794,
+  "text": "《深度学习数学导论(Mathematical Introduction to Deep Learning: Methods, Implementations, and Theory)》｜全面掌握人工神经网络与优化理论！📚✨<br />📌【多样化ANN架构】全连接、卷积、残差、循环网络详尽解析，涵盖ReLU、GELU、Swish等丰富激活函数。🤖<br />📌【理论与实现并重】深入ANN的向量 ...<a href=\"/status/5188923573404794\">全文</a>",
+  "source": "Mac客户端",
+  "created_at": "Wed Jul 16 06:40:48 +0800 2025",
+  "user": {
+    "id": 1402400261,
+    "screen_name": "爱可可-爱生活",
+    "profile_image_url": "https://tva2.sinaimg.cn/crop.10.34.646.646.180/5396ee05jw1ena6co8qiwj20sg0izjxd.jpg?KID=imgbed,tva&Expires=1752744231&ssig=mKmwQ4f8aA",
+    "profile_url": "https://m.weibo.cn/u/1402400261?",
+    "description": "北邮PRIS模式识别实验室陈老师 商务合作 QQ:1289468869 Email:1289468869@qq.com",
+    "follow_count": 760,
+    "followers_count": "85.7万",
+    "avatar_hd": "https://ww2.sinaimg.cn/orj480/5396ee05jw1ena6co8qiwj20sg0izjxd.jpg",
+    "verified": true,
+    "verified_reason": "AI博主",
+    "gender": "m"
+  },
+  "comments_count": 4,
+  "attitudes_count": 58,
+  "reposts_count": 80,
+  "raw_text": "",
+  "region_name": "发布于 北京",
+  "pics": [{
+    "thumbnail": "https://wx2.sinaimg.cn/orj360/5396ee05ly8i3fgq9fm9fj20p610aq51.jpg",
+    "large": "https://wx2.sinaimg.cn/large/5396ee05ly8i3fgq9fm9fj20p610aq51.jpg"
+  }],
+  "videos": {}
+}]
+```
+
+#### get_followers(uid, limit, page)
+描述：获取关注列表
+
+返回值示例如下：
+```json
+[{
+  "id": 6486678714,
+  "screen_name": "张小珺-Benita",
+  "profile_image_url": "https://tvax1.sinaimg.cn/crop.0.0.1080.1080.180/0074Zrsely8hz0hg65fq8j30u00u0n1e.jpg?KID=imgbed,tva&Expires=1752744494&ssig=SZY8jaooks",
+  "profile_url": "https://m.weibo.cn/u/6486678714?",
+  "description": "喜欢无聊的小东西",
+  "follow_count": 54,
+  "followers_count": "10万",
+  "avatar_hd": "https://wx1.sinaimg.cn/orj480/0074Zrsely8hz0hg65fq8j30u00u0n1e.jpg",
+  "verified": true,
+  "verified_reason": "财经作者、播客《张小珺Jùn｜商业访谈录》主理人",
+  "gender": "f"
+  },
+  {
+    "id": 3587960280,
+    "screen_name": "粉丝头条官方微博",
+    "profile_image_url": "https://tvax4.sinaimg.cn/crop.0.0.499.499.180/003UOIn6ly8h8vdmp57oyj60dv0dvq3502.jpg?KID=imgbed,tva&Expires=1752744494&ssig=1SFiIxbaYr",
+    "profile_url": "https://m.weibo.cn/u/3587960280?",
+    "description": "推广博文及账号的利器！助您快速积累社交资产！",
+    "follow_count": 760,
+    "followers_count": "1438.8万",
+    "avatar_hd": "https://wx4.sinaimg.cn/orj480/003UOIn6ly8h8vdmp57oyj60dv0dvq3502.jpg",
+    "verified": true,
+    "verified_reason": "粉丝头条官方微博",
+    "gender": "f"
+}]
+```
+
+#### get_fans(uid, limit, page)
+描述：获取粉丝列表
+
+返回值示例如下：
+```json
+[{
+  "id": 6486678714,
+  "screen_name": "张小珺-Benita",
+  "profile_image_url": "https://tvax1.sinaimg.cn/crop.0.0.1080.1080.180/0074Zrsely8hz0hg65fq8j30u00u0n1e.jpg?KID=imgbed,tva&Expires=1752744494&ssig=SZY8jaooks",
+  "profile_url": "https://m.weibo.cn/u/6486678714?",
+  "description": "喜欢无聊的小东西",
+  "follow_count": 54,
+  "followers_count": "10万",
+  "avatar_hd": "https://wx1.sinaimg.cn/orj480/0074Zrsely8hz0hg65fq8j30u00u0n1e.jpg",
+  "verified": true,
+  "verified_reason": "财经作者、播客《张小珺Jùn｜商业访谈录》主理人",
+  "gender": "f"
+  },
+  {
+    "id": 3587960280,
+    "screen_name": "粉丝头条官方微博",
+    "profile_image_url": "https://tvax4.sinaimg.cn/crop.0.0.499.499.180/003UOIn6ly8h8vdmp57oyj60dv0dvq3502.jpg?KID=imgbed,tva&Expires=1752744494&ssig=1SFiIxbaYr",
+    "profile_url": "https://m.weibo.cn/u/3587960280?",
+    "description": "推广博文及账号的利器！助您快速积累社交资产！",
+    "follow_count": 760,
+    "followers_count": "1438.8万",
+    "avatar_hd": "https://wx4.sinaimg.cn/orj480/003UOIn6ly8h8vdmp57oyj60dv0dvq3502.jpg",
+    "verified": true,
+    "verified_reason": "粉丝头条官方微博",
+    "gender": "f"
 }]
 ```
 
