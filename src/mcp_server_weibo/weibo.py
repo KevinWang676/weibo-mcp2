@@ -335,7 +335,7 @@ class WeiboCrawler:
                 if len(cards) < 1:
                     return []
                 else:
-                    cardGroup = cards[0]['card_group']
+                    cardGroup = cards[-1]['card_group']
                     return [self._to_user_profile(item['user']) for item in cardGroup][:limit]
             except httpx.HTTPError:
                 self.logger.error(f"Unable to get fans for uid '{str(uid)}'", exc_info=True)
